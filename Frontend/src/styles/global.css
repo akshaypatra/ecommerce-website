@@ -1,0 +1,224 @@
+@import './variables.css';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Override Bootstrap with Spiritual Theme */
+
+.btn-primary {
+  background-color: var(--spiritual-teal);
+  border-color: var(--spiritual-teal);
+}
+
+.btn-primary:hover {
+  background-color: #558893;
+  border-color: #558893;
+}
+
+.btn-outline-primary {
+  color: var(--spiritual-teal);
+  border-color: var(--spiritual-teal);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--spiritual-teal);
+  border-color: var(--spiritual-teal);
+}
+
+/* Navbar Spiritual Style */
+.navbar {
+  background: linear-gradient(135deg, var(--primary-cream) 0%, var(--primary-light-lavender) 100%);
+  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid rgba(196, 181, 253, 0.3);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--spiritual-purple) !important;
+  letter-spacing: 0.5px;
+}
+
+.nav-link {
+  color: var(--text-dark) !important;
+  margin: 0 0.5rem;
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 50%;
+  background-color: var(--accent-sage);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Card Spiritual Design */
+.card {
+  border: none;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--primary-cream) 0%, var(--primary-light-lavender) 100%);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+}
+
+/* Product Cards */
+.product-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid rgba(196, 181, 253, 0.2);
+}
+
+.product-image {
+  background: linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-soft-mint) 100%);
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+
+/* Forms */
+.form-control, .form-select {
+  border: 1px solid var(--accent-lavender);
+  border-radius: var(--radius-md);
+  background-color: var(--white);
+  color: var(--text-dark);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--spiritual-teal);
+  box-shadow: 0 0 0 0.2rem rgba(102, 179, 161, 0.25);
+}
+
+.form-label {
+  color: var(--text-dark);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Badges */
+.badge {
+  border-radius: var(--radius-full);
+  padding: 0.4rem 0.8rem;
+  font-weight: 500;
+}
+
+.badge-spiritual {
+  background-color: var(--accent-lavender);
+  color: var(--spiritual-purple);
+}
+
+/* Footer */
+footer {
+  background: linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-soft-mint) 100%);
+  color: var(--text-dark);
+  border-top: 1px solid rgba(196, 181, 253, 0.3);
+  margin-top: var(--spacing-2xl);
+}
+
+footer a {
+  color: var(--spiritual-teal);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: var(--spiritual-purple);
+}
+
+/* Alerts */
+.alert-success {
+  background-color: rgba(102, 179, 161, 0.1);
+  border: 1px solid var(--accent-sage);
+  color: var(--text-dark);
+}
+
+.alert-danger {
+  background-color: rgba(232, 93, 117, 0.1);
+  border: 1px solid var(--danger);
+  color: var(--text-dark);
+}
+
+.alert-info {
+  background-color: rgba(179, 217, 255, 0.1);
+  border: 1px solid var(--accent-sky-blue);
+  color: var(--text-dark);
+}
+
+/* Pagination */
+.pagination {
+  margin-top: var(--spacing-lg);
+}
+
+.page-link {
+  color: var(--spiritual-teal);
+  border: 1px solid var(--accent-lavender);
+  border-radius: var(--radius-md);
+}
+
+.page-link:hover {
+  background-color: var(--accent-lavender);
+  color: var(--spiritual-purple);
+}
+
+.page-item.active .page-link {
+  background-color: var(--spiritual-teal);
+  border-color: var(--spiritual-teal);
+}
+
+/* Dividers & Separators */
+hr {
+  border-color: var(--accent-lavender);
+  opacity: 0.5;
+}
+
+/* Smooth Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Price Styling */
+.price {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--spiritual-gold);
+}
+
+/* Loading Spinner */
+.spinner {
+  color: var(--spiritual-teal);
+}
