@@ -1,190 +1,288 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { FiLoader, FiFilter } from 'react-icons/fi';
+import { productAPI } from '../services/api';
+import { FiLoader, FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
-function ProductsPage({ addToCart }) {
+function ProductsPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('name');
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
+  const [sortBy, setSortBy] = useState(searchParams.get('ordering') || '-created_at');
+  const [minPrice, setMinPrice] = useState(searchParams.get('min_price') || '');
+  const [maxPrice, setMaxPrice] = useState(searchParams.get('max_price') || '');
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [showFilters, setShowFilters] = useState(true);
 
+  // Fetch categories on mount
   useEffect(() => {
-    fetchProducts();
+    productAPI.getCategories()
+      .then(res => {
+        const cats = Array.isArray(res.data) ? res.data : [];
+        setCategories(cats);
+      })
+      .catch(() => setCategories([]));
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      // Mock data - replace with actual API call
-      const mockProducts = [
-        { id: 1, name: 'Amethyst Crystal Cluster', price: 45.99, description: 'Natural energy healing crystal', image: null },
-        { id: 2, name: 'Yoga Mat - Organic Cotton', price: 62.50, description: 'Eco-friendly non-slip mat', image: null },
-        { id: 3, name: 'Meditation Cushion', price: 38.00, description: 'Premium buckwheat meditation pillow', image: null },
-        { id: 4, name: 'Chakra Balancing Oil', price: 24.99, description: 'Essential oils blend for chakra alignment', image: null },
-        { id: 5, name: 'Healing Sound Bowl', price: 89.99, description: 'Handcrafted singing bowl for meditation', image: null },
-        { id: 6, name: 'Sage Bundle', price: 12.50, description: 'White sage for spiritual cleansing', image: null },
-      ];
-      setProducts(mockProducts);
-      setFilteredProducts(mockProducts);
+      setError(null);
+      
+      const params = { page: currentPage, ordering: sortBy };
+      if (searchQuery) params.search = searchQuery;
+      if (selectedCategory) params.category_slug = selectedCategory;
+      if (minPrice) params.min_price = minPrice;
+      if (maxPrice) params.max_price = maxPrice;
+      if (inStockOnly) params.in_stock = true;
+
+      const res = await productAPI.getAll(params);
+      const data = res.data;
+      
+      // Handle paginated or plain array response
+      if (data.results) {
+        setProducts(data.results);
+        setTotalCount(data.count || data.results.length);
+      } else if (Array.isArray(data)) {
+        setProducts(data);
+        setTotalCount(data.length);
+      } else {
+        setProducts([]);
+        setTotalCount(0);
+      }
     } catch (err) {
-      setError('Failed to load products');
       console.error('Error fetching products:', err);
+      setError('Unable to load products. Please check if the backend server is running.');
+      setProducts([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, sortBy, searchQuery, selectedCategory, minPrice, maxPrice, inStockOnly]);
 
   useEffect(() => {
-    filterAndSortProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, sortBy, priceRange, products]);
+    fetchProducts();
+  }, [fetchProducts]);
 
-  const filterAndSortProducts = () => {
-    let filtered = products.filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           product.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
-      return matchesSearch && matchesPrice;
-    });
-
-    // Sort products
-    if (sortBy === 'price-low') {
-      filtered.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-high') {
-      filtered.sort((a, b) => b.price - a.price);
-    } else {
-      filtered.sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    setFilteredProducts(filtered);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setCurrentPage(1);
+    const params = {};
+    if (searchQuery) params.search = searchQuery;
+    if (selectedCategory) params.category = selectedCategory;
+    setSearchParams(params);
   };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedCategory('');
+    setSortBy('-created_at');
+    setMinPrice('');
+    setMaxPrice('');
+    setInStockOnly(false);
+    setCurrentPage(1);
+    setSearchParams({});
+  };
+
+  const totalPages = Math.ceil(totalCount / 20);
 
   return (
     <div className="container py-4">
       {/* Header */}
-      <div
-        style={{
-          background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-soft-mint) 100%)',
-          padding: '2rem',
-          borderRadius: 'var(--radius-lg)',
-          marginBottom: '2rem',
-          textAlign: 'center',
-        }}
-      >
-        <h1 style={{ color: 'var(--spiritual-purple)', marginBottom: '0.5rem' }}>
-          Our Spiritual Products
-        </h1>
-        <p style={{ color: 'var(--text-light)', margin: 0 }}>
-          Discover items to enhance your wellness journey
-        </p>
+      <div className="page-header">
+        <h1>Sacred Collection</h1>
+        <p>Discover authentic Rudraksha, gemstones, and spiritual products</p>
       </div>
 
       <div className="row">
         {/* Sidebar Filters */}
-        <div className="col-lg-3 mb-4">
-          <div
-            className="card"
-            style={{
-              background: 'linear-gradient(135deg, var(--primary-cream) 0%, var(--primary-light-lavender) 100%)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '1.5rem',
-            }}
-          >
-            <h6 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem', fontWeight: '600' }}>
-              <FiFilter className="me-2" />
-              Filters
-            </h6>
-
-            {/* Search */}
-            <div className="mb-4">
-              <label className="form-label" style={{ fontSize: '0.9rem', fontWeight: '600' }}>
-                Search Products
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search by name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ borderRadius: 'var(--radius-md)' }}
-              />
+        <div className={`col-lg-3 mb-4 ${showFilters ? '' : 'd-none d-lg-block'}`}>
+          <div className="filter-card">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h6 style={{ color: 'var(--spiritual-purple)', fontWeight: '600', margin: 0 }}>
+                <FiFilter className="me-2" />
+                Filters
+              </h6>
+              <button className="btn btn-sm btn-link" onClick={clearFilters} style={{ color: 'var(--spiritual-teal)' }}>
+                <FiX className="me-1" /> Clear
+              </button>
             </div>
 
-            {/* Sort By */}
-            <div className="mb-4">
-              <label className="form-label" style={{ fontSize: '0.9rem', fontWeight: '600' }}>
-                Sort By
-              </label>
+            {/* Search */}
+            <form onSubmit={handleSearch} className="mb-3">
+              <label className="form-label small fw-bold">Search</label>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Rudraksha, Neelam..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button className="btn btn-primary" type="submit">
+                  <FiSearch size={16} />
+                </button>
+              </div>
+            </form>
+
+            {/* Category Filter */}
+            {categories.length > 0 && (
+              <div className="mb-3">
+                <label className="form-label small fw-bold">Category</label>
+                <select
+                  className="form-select"
+                  value={selectedCategory}
+                  onChange={(e) => { setSelectedCategory(e.target.value); setCurrentPage(1); }}
+                >
+                  <option value="">All Categories</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.slug}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Sort */}
+            <div className="mb-3">
+              <label className="form-label small fw-bold">Sort By</label>
               <select
                 className="form-select"
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                style={{ borderRadius: 'var(--radius-md)' }}
+                onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
               >
-                <option value="name">Name (A-Z)</option>
-                <option value="price-low">Price (Low to High)</option>
-                <option value="price-high">Price (High to Low)</option>
+                <option value="-created_at">Newest First</option>
+                <option value="created_at">Oldest First</option>
+                <option value="price">Price: Low to High</option>
+                <option value="-price">Price: High to Low</option>
+                <option value="name">Name: A-Z</option>
               </select>
             </div>
 
             {/* Price Range */}
-            <div>
-              <label className="form-label" style={{ fontSize: '0.9rem', fontWeight: '600' }}>
-                Price Range: ${priceRange[0]} - ${priceRange[1]}
-              </label>
-              <input
-                type="range"
-                className="form-range"
-                min="0"
-                max="1000"
-                value={priceRange[1]}
-                onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-              />
+            <div className="mb-3">
+              <label className="form-label small fw-bold">Price Range (₹)</label>
+              <div className="d-flex gap-2">
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Min"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  min="0"
+                />
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Max"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  min="0"
+                />
+              </div>
             </div>
+
+            {/* In Stock */}
+            <div className="form-check mb-3">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="inStock"
+                checked={inStockOnly}
+                onChange={(e) => { setInStockOnly(e.target.checked); setCurrentPage(1); }}
+              />
+              <label className="form-check-label small" htmlFor="inStock">In Stock Only</label>
+            </div>
+
+            <button onClick={fetchProducts} className="btn btn-primary w-100" style={{ borderRadius: 'var(--radius-md)' }}>
+              Apply Filters
+            </button>
           </div>
         </div>
 
         {/* Products Grid */}
         <div className="col-lg-9">
+          {/* Mobile filter toggle */}
+          <div className="d-lg-none mb-3">
+            <button 
+              className="btn btn-outline-primary btn-sm"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <FiFilter className="me-1" />
+              {showFilters ? 'Hide Filters' : 'Show Filters'}
+            </button>
+          </div>
+
           {loading ? (
             <div className="text-center py-5">
-              <FiLoader className="spinner" style={{ fontSize: '2rem', animation: 'spin 1s linear infinite' }} />
-              <p className="mt-3">Loading products...</p>
+              <FiLoader className="spinner" style={{ fontSize: '2rem' }} />
+              <p className="mt-3" style={{ color: 'var(--text-light)' }}>Loading sacred products...</p>
             </div>
           ) : error ? (
-            <div className="alert alert-danger">{error}</div>
+            <div className="alert alert-info text-center">
+              <p className="mb-2">{error}</p>
+              <button className="btn btn-primary btn-sm" onClick={fetchProducts}>
+                Retry
+              </button>
+            </div>
           ) : (
             <>
-              <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
-                Showing {filteredProducts.length} products
+              <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                Showing {products.length} of {totalCount} products
               </p>
               <div className="row g-4">
-                {filteredProducts.map(product => (
+                {products.map(product => (
                   <div key={product.id} className="col-md-6 col-lg-4">
-                    <ProductCard product={product} onAddToCart={addToCart} />
+                    <ProductCard product={product} />
                   </div>
                 ))}
               </div>
 
-              {filteredProducts.length === 0 && (
-                <div className="alert alert-info text-center">
-                  <p>No products found matching your filters</p>
+              {products.length === 0 && !loading && (
+                <div className="text-center py-5">
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
+                  <h5 style={{ color: 'var(--spiritual-purple)' }}>No Products Found</h5>
+                  <p style={{ color: 'var(--text-light)' }}>Try adjusting your filters or search terms</p>
+                  <button className="btn btn-primary" onClick={clearFilters}>Clear All Filters</button>
                 </div>
+              )}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <nav className="mt-4">
+                  <ul className="pagination justify-content-center">
+                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>
+                        Previous
+                      </button>
+                    </li>
+                    {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                      const page = currentPage <= 3 ? i + 1 : currentPage - 2 + i;
+                      if (page > totalPages || page < 1) return null;
+                      return (
+                        <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                          <button className="page-link" onClick={() => setCurrentPage(page)}>
+                            {page}
+                          </button>
+                        </li>
+                      );
+                    })}
+                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>
+                        Next
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
               )}
             </>
           )}
         </div>
       </div>
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 }

@@ -1,117 +1,113 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiShoppingCart, FiLoader } from 'react-icons/fi';
+import { FiShoppingCart, FiStar } from 'react-icons/fi';
 
-function ProductCard({ product, onAddToCart }) {
-  const [quantity, setQuantity] = useState(1);
-  const [isAdding, setIsAdding] = useState(false);
+const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,' + btoa(`
+  <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+    <rect fill="#e8e0f0" width="300" height="300"/>
+    <circle cx="150" cy="140" r="35" fill="#d4af37" opacity="0.3"/>
+    <circle cx="150" cy="140" r="25" fill="#9966cc" opacity="0.2"/>
+    <text x="150" y="190" text-anchor="middle" font-size="12" fill="#9966cc" font-family="sans-serif" font-weight="bold">Divine Gems</text>
+  </svg>
+`);
 
-  const handleAddToCart = async () => {
-    setIsAdding(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
-      onAddToCart(product, quantity);
-      setQuantity(1);
-      alert('Added to cart!');
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    } finally {
-      setIsAdding(false);
+function ProductCard({ product }) {
+  const [imgError, setImgError] = useState(false);
+
+  const imageUrl = !imgError && (product.primary_image || product.image) 
+    ? (product.primary_image || product.image) 
+    : PLACEHOLDER_IMG;
+
+  const price = parseFloat(product.effective_price || product.price || 0);
+  const originalPrice = parseFloat(product.price || 0);
+  const discountPct = product.discount_percentage || 0;
+  const rating = product.average_rating || 0;
+  const reviewCount = product.reviews_count || product.reviews?.length || 0;
+
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <FiStar
+          key={i}
+          size={14}
+          style={{
+            color: i <= Math.round(rating) ? 'var(--spiritual-gold)' : '#ddd',
+            fill: i <= Math.round(rating) ? 'var(--spiritual-gold)' : 'none',
+          }}
+        />
+      );
     }
+    return stars;
   };
 
   return (
     <div className="fade-in">
       <div className="product-card">
-        {/* Product Image */}
         <Link to={`/products/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="product-image">
-            {product.image ? (
-              <img src={product.image} alt={product.name} loading="lazy" />
-            ) : (
-              <div
-                style={{
-                  fontSize: '3rem',
-                  textAlign: 'center',
-                  color: 'var(--spiritual-purple)',
-                }}
-              >
-                ✨
-              </div>
+            <img
+              src={imageUrl}
+              alt={product.name}
+              loading="lazy"
+              onError={() => setImgError(true)}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            {discountPct > 0 && (
+              <span className="discount-badge">
+                {Math.round(discountPct)}% OFF
+              </span>
+            )}
+            {product.is_featured && (
+              <span className="featured-badge">Featured</span>
             )}
           </div>
         </Link>
 
-        {/* Product Info */}
-        <div className="p-4">
+        <div className="p-3">
           <Link to={`/products/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <h6
-              style={{
-                marginBottom: '0.5rem',
-                color: 'var(--text-dark)',
-                fontWeight: '600',
-                minHeight: '2.5rem',
-              }}
-            >
-              {product.name}
-            </h6>
+            <h6 className="product-title">{product.name}</h6>
           </Link>
 
-          <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-            {product.description?.substring(0, 50)}...
-          </p>
+          {product.category_name && (
+            <small className="product-category">{product.category_name}</small>
+          )}
 
           {/* Rating */}
-          <div className="d-flex align-items-center mb-3">
-            <span style={{ color: 'var(--spiritual-gold)' }} className="me-2">
-              ★★★★★
-            </span>
-            <small style={{ color: 'var(--text-light)' }}>({product.reviews_count || 0})</small>
+          <div className="d-flex align-items-center mb-2 mt-1">
+            <div className="d-flex me-1">{renderStars(rating)}</div>
+            <small style={{ color: 'var(--text-light)' }}>
+              {rating > 0 ? `${rating}` : ''} ({reviewCount})
+            </small>
           </div>
 
           {/* Price */}
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <span className="price">${parseFloat(product.price).toFixed(2)}</span>
-            {product.discount && (
-              <span className="badge badge-spiritual">
-                {product.discount}% OFF
-              </span>
+          <div className="d-flex align-items-center gap-2 mb-2">
+            <span className="product-price">₹{price.toFixed(0)}</span>
+            {discountPct > 0 && originalPrice > price && (
+              <span className="product-original-price">₹{originalPrice.toFixed(0)}</span>
             )}
           </div>
 
-          {/* Add to Cart */}
-          <div className="d-flex gap-2">
-            <input
-              type="number"
-              min="1"
-              max="10"
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value))}
-              className="form-control"
-              style={{
-                flex: '0.5',
-                padding: '0.5rem',
-                textAlign: 'center',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--accent-lavender)',
-              }}
-            />
-            <button
-              onClick={handleAddToCart}
-              disabled={isAdding}
-              className="btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2"
-              style={{ borderRadius: 'var(--radius-md)' }}
-            >
-              {isAdding ? (
-                <FiLoader className="spinner" />
-              ) : (
-                <>
-                  <FiShoppingCart size={18} />
-                  Add
-                </>
-              )}
-            </button>
-          </div>
+          {/* Stock */}
+          {product.stock !== undefined && product.stock <= 5 && product.stock > 0 && (
+            <small style={{ color: 'var(--danger)', fontWeight: '500' }}>
+              Only {product.stock} left!
+            </small>
+          )}
+          {product.stock === 0 && (
+            <small style={{ color: 'var(--danger)', fontWeight: '500' }}>Out of Stock</small>
+          )}
+
+          {/* View Details */}
+          <Link
+            to={`/products/${product.id}`}
+            className="btn btn-primary w-100 mt-2 d-flex align-items-center justify-content-center gap-2"
+            style={{ borderRadius: 'var(--radius-md)', fontSize: '0.9rem' }}
+          >
+            <FiShoppingCart size={16} />
+            View Details
+          </Link>
         </div>
       </div>
     </div>

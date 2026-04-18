@@ -1,156 +1,227 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiLoader } from 'react-icons/fi';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { FiPackage, FiDownload, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { orderAPI } from '../services/api';
 
-function OrdersPage({ isLoggedIn }) {
-  const navigate = useNavigate();
+function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedOrder, setExpandedOrder] = useState(null);
+
+  const fetchOrders = useCallback(async () => {
+    try {
+      const res = await orderAPI.getAll();
+      setOrders(res.data?.results || res.data || []);
+    } catch (err) {
+      console.error('Error fetching orders:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/login');
-      return;
-    }
-
-    // Simulate fetching orders
-    setTimeout(() => {
-      const mockOrders = [
-        {
-          id: 'ORD-001',
-          date: '2026-03-20',
-          total: 95.97,
-          status: 'Delivered',
-          items: 3,
-        },
-        {
-          id: 'ORD-002',
-          date: '2026-03-15',
-          total: 45.99,
-          status: 'In Transit',
-          items: 1,
-        },
-      ];
-      setOrders(mockOrders);
-      setLoading(false);
-    }, 1000);
-  }, [isLoggedIn, navigate]);
+    fetchOrders();
+  }, [fetchOrders]);
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case 'Delivered':
-        return 'var(--accent-sage)';
-      case 'In Transit':
-        return 'var(--accent-sky-blue)';
-      case 'Processing':
-        return 'var(--accent-warm-sand)';
-      default:
-        return 'var(--text-light)';
+    const map = {
+      pending: '#f0ad4e',
+      confirmed: '#5bc0de',
+      processing: '#5bc0de',
+      shipped: '#0275d8',
+      delivered: '#5cb85c',
+      cancelled: '#d9534f',
+      refunded: '#868e96',
+    };
+    return map[status] || 'var(--text-light)';
+  };
+
+  const getPaymentBadge = (paymentStatus) => {
+    const map = {
+      pending: { bg: '#f0ad4e', text: 'Payment Pending' },
+      completed: { bg: '#5cb85c', text: 'Paid' },
+      failed: { bg: '#d9534f', text: 'Failed' },
+      refunded: { bg: '#868e96', text: 'Refunded' },
+    };
+    return map[paymentStatus] || { bg: '#868e96', text: paymentStatus };
+  };
+
+  const handleDownloadInvoice = async (orderId) => {
+    try {
+      const res = await orderAPI.downloadInvoice(orderId);
+      const blob = new Blob([res.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice-${orderId.substring(0, 8)}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      alert('Failed to download invoice.');
     }
   };
 
   if (loading) {
     return (
-      <div className="container py-5">
-        <div style={{ textAlign: 'center' }}>
-          <FiLoader className="spinner" style={{ fontSize: '2rem', animation: 'spin 1s linear infinite' }} />
-          <p className="mt-3">Loading your orders...</p>
-        </div>
-        <style>{`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
+      <div className="container py-5 text-center">
+        <div className="spinner-border" style={{ color: 'var(--spiritual-teal)' }} />
+        <p className="mt-3">Loading your orders...</p>
       </div>
     );
   }
 
   return (
     <div className="container py-4">
-      <h1 style={{ color: 'var(--spiritual-purple)', marginBottom: '2rem' }}>
-        My Orders
-      </h1>
+      <h1 style={{ color: 'var(--spiritual-purple)', marginBottom: '2rem' }}>My Orders</h1>
 
       {orders.length === 0 ? (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '3rem',
-            background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-soft-mint) 100%)',
-            borderRadius: 'var(--radius-lg)',
-          }}
-        >
-          <h3 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem' }}>
-            No Orders Yet
-          </h3>
+        <div className="empty-state">
+          <FiPackage style={{ fontSize: '3rem', color: 'var(--spiritual-teal)', marginBottom: '1rem' }} />
+          <h3 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem' }}>No Orders Yet</h3>
           <p style={{ color: 'var(--text-light)', marginBottom: '2rem' }}>
-            Start your wellness journey by exploring our collection.
+            Start your spiritual journey by exploring our collection.
           </p>
-          <Link to="/products" className="btn btn-primary">
-            Shop Now
-          </Link>
+          <Link to="/products" className="btn btn-primary">Shop Now</Link>
         </div>
       ) : (
-        <div className="row g-4">
-          {orders.map(order => (
-            <div key={order.id} className="col-md-6 col-lg-4">
-              <div
-                className="card"
-                style={{
-                  background: 'linear-gradient(135deg, var(--primary-cream) 0%, var(--primary-light-lavender) 100%)',
-                  borderRadius: 'var(--radius-lg)',
-                  height: '100%',
-                }}
-              >
-                <div className="card-body">
-                  <h5 style={{ color: 'var(--spiritual-purple)', marginBottom: '0.5rem', fontWeight: '600' }}>
-                    {order.id}
-                  </h5>
-
-                  <div style={{ marginBottom: '1rem' }}>
-                    <p style={{ color: 'var(--text-light)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>
-                      <strong>Date:</strong> {new Date(order.date).toLocaleDateString()}
-                    </p>
-                    <p style={{ color: 'var(--text-light)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>
-                      <strong>Items:</strong> {order.items}
-                    </p>
-                    <p style={{ marginBottom: 0, fontSize: '0.9rem' }}>
-                      <strong>Status:</strong>{' '}
-                      <span
-                        className="badge"
-                        style={{
-                          backgroundColor: getStatusColor(order.status),
-                          color: 'white',
-                          padding: '0.3rem 0.6rem',
-                        }}
-                      >
+        <div className="d-flex flex-column gap-3">
+          {orders.map(order => {
+            const isExpanded = expandedOrder === order.order_id;
+            const payBadge = getPaymentBadge(order.payment_status);
+            return (
+              <div key={order.order_id} className="card" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                {/* Order Header */}
+                <div
+                  className="card-body"
+                  style={{ cursor: 'pointer', background: 'linear-gradient(135deg, var(--primary-cream) 0%, var(--primary-light-lavender) 100%)' }}
+                  onClick={() => setExpandedOrder(isExpanded ? null : order.order_id)}
+                >
+                  <div className="row align-items-center">
+                    <div className="col-md-3">
+                      <small style={{ color: 'var(--text-light)' }}>Order ID</small>
+                      <div style={{ fontWeight: '600', color: 'var(--spiritual-purple)', fontSize: '0.9rem' }}>
+                        #{order.order_id?.substring(0, 8)}
+                      </div>
+                    </div>
+                    <div className="col-md-2">
+                      <small style={{ color: 'var(--text-light)' }}>Date</small>
+                      <div style={{ fontSize: '0.9rem' }}>{new Date(order.created_at).toLocaleDateString()}</div>
+                    </div>
+                    <div className="col-md-2">
+                      <small style={{ color: 'var(--text-light)' }}>Items</small>
+                      <div style={{ fontSize: '0.9rem' }}>{order.items?.length || 0}</div>
+                    </div>
+                    <div className="col-md-2">
+                      <span className="badge" style={{ backgroundColor: getStatusColor(order.status), color: '#fff', padding: '0.4rem 0.7rem', textTransform: 'capitalize' }}>
                         {order.status}
                       </span>
-                    </p>
+                      <br />
+                      <span className="badge mt-1" style={{ backgroundColor: payBadge.bg, color: '#fff', padding: '0.25rem 0.5rem', fontSize: '0.7rem' }}>
+                        {payBadge.text}
+                      </span>
+                    </div>
+                    <div className="col-md-2">
+                      <small style={{ color: 'var(--text-light)' }}>Total</small>
+                      <div style={{ fontWeight: '700', color: 'var(--spiritual-gold)', fontSize: '1.1rem' }}>
+                        ₹{parseFloat(order.total || 0).toFixed(0)}
+                      </div>
+                    </div>
+                    <div className="col-md-1 text-end">
+                      {isExpanded ? <FiChevronUp /> : <FiChevronDown />}
+                    </div>
                   </div>
-
-                  <hr />
-
-                  <div style={{ marginBottom: '1rem' }}>
-                    <p style={{ color: 'var(--text-light)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                      <strong>Total:</strong>
-                    </p>
-                    <p className="price" style={{ margin: 0 }}>
-                      ${order.total.toFixed(2)}
-                    </p>
-                  </div>
-
-                  <button
-                    className="btn btn-outline-primary w-100"
-                    style={{ borderRadius: 'var(--radius-md)' }}
-                  >
-                    View Details
-                  </button>
                 </div>
+
+                {/* Expanded Details */}
+                {isExpanded && (
+                  <div className="card-body" style={{ borderTop: '1px solid var(--accent-lavender)' }}>
+                    {/* Shipping */}
+                    <div className="row mb-3">
+                      <div className="col-md-6">
+                        <h6 style={{ fontWeight: '600', color: 'var(--spiritual-purple)' }}>Shipping Address</h6>
+                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>
+                          {order.shipping_full_name}
+                        </p>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>
+                          {order.shipping_address_line1}
+                          {order.shipping_address_line2 && `, ${order.shipping_address_line2}`}
+                        </p>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: 0 }}>
+                          {order.shipping_city}, {order.shipping_state} - {order.shipping_pincode}
+                        </p>
+                      </div>
+                      <div className="col-md-6">
+                        <h6 style={{ fontWeight: '600', color: 'var(--spiritual-purple)' }}>Summary</h6>
+                        <div style={{ fontSize: '0.9rem' }}>
+                          <div className="d-flex justify-content-between"><span>Subtotal:</span><span>₹{parseFloat(order.subtotal || 0).toFixed(0)}</span></div>
+                          <div className="d-flex justify-content-between"><span>Shipping:</span><span>₹{parseFloat(order.shipping_charge || 0).toFixed(0)}</span></div>
+                          {parseFloat(order.discount || 0) > 0 && (
+                            <div className="d-flex justify-content-between text-success"><span>Discount:</span><span>-₹{parseFloat(order.discount).toFixed(0)}</span></div>
+                          )}
+                          <hr className="my-1" />
+                          <div className="d-flex justify-content-between" style={{ fontWeight: '700' }}>
+                            <span>Total:</span><span>₹{parseFloat(order.total || 0).toFixed(0)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Items */}
+                    <h6 style={{ fontWeight: '600', color: 'var(--spiritual-purple)', marginBottom: '0.5rem' }}>Items</h6>
+                    <div className="table-responsive">
+                      <table className="table table-sm" style={{ fontSize: '0.9rem' }}>
+                        <thead>
+                          <tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr>
+                        </thead>
+                        <tbody>
+                          {(order.items || []).map(item => (
+                            <tr key={item.id}>
+                              <td>{item.product_name}</td>
+                              <td>₹{parseFloat(item.product_price || 0).toFixed(0)}</td>
+                              <td>{item.quantity}</td>
+                              <td>₹{parseFloat(item.subtotal || 0).toFixed(0)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Tracking & Status History */}
+                    {order.tracking_number && (
+                      <p style={{ fontSize: '0.9rem' }}>
+                        <strong>Tracking:</strong> {order.tracking_number}
+                      </p>
+                    )}
+                    {order.status_history?.length > 0 && (
+                      <div className="mt-2">
+                        <h6 style={{ fontWeight: '600', color: 'var(--spiritual-purple)' }}>Status Timeline</h6>
+                        <div className="d-flex flex-column gap-1">
+                          {order.status_history.map((sh, idx) => (
+                            <small key={idx} style={{ color: 'var(--text-light)' }}>
+                              <span className="badge me-1" style={{ backgroundColor: getStatusColor(sh.status), color: '#fff', textTransform: 'capitalize' }}>{sh.status}</span>
+                              {sh.note && <span className="me-2">{sh.note}</span>}
+                              <span>{new Date(sh.created_at).toLocaleString()}</span>
+                            </small>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="mt-3 d-flex gap-2">
+                      <button
+                        className="btn btn-outline-primary btn-sm"
+                        style={{ borderRadius: 'var(--radius-md)' }}
+                        onClick={() => handleDownloadInvoice(order.order_id)}
+                      >
+                        <FiDownload className="me-1" /> Download Invoice
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -103,6 +103,7 @@ class RazorpayVerifyView(APIView):
             msg.encode(),
             hashlib.sha256,
         ).hexdigest()
+        # Note: hmac.new is correct in Python
 
         if not hmac.compare_digest(generated_signature, rz_signature):
             return Response({'detail': 'Invalid payment signature.'}, status=status.HTTP_400_BAD_REQUEST)

@@ -1,201 +1,155 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiArrowRight, FiHeart, FiAward, FiTrendingUp } from 'react-icons/fi';
+import { FiArrowRight, FiShield, FiStar, FiTruck, FiGift } from 'react-icons/fi';
+import { productAPI } from '../services/api';
+import ProductCard from '../components/ProductCard';
 
 function HomePage() {
+  const [categories, setCategories] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  // eslint-disable-next-line
+  const [loading, setLoading] = useState(true);
+
+  // Fallback categories when API is unavailable
+  const fallbackCategories = [
+    { id: 1, name: 'Rudraksha Beads', slug: 'rudraksha-beads', emoji: '📿', description: 'Sacred seeds of Lord Shiva for spiritual protection' },
+    { id: 2, name: 'Gemstones', slug: 'gemstones', emoji: '💎', description: 'Natural precious & semi-precious healing stones' },
+    { id: 3, name: 'Malas & Rosaries', slug: 'malas-rosaries', emoji: '🙏', description: 'Handcrafted prayer beads for meditation' },
+    { id: 4, name: 'Yantras', slug: 'yantras', emoji: '🕉️', description: 'Sacred geometric diagrams for energy & prosperity' },
+    { id: 5, name: 'Crystal Healing', slug: 'crystal-healing', emoji: '🔮', description: 'Natural crystals for chakra balancing' },
+    { id: 6, name: 'Spiritual Jewelry', slug: 'spiritual-jewelry', emoji: '✨', description: 'Blessed rings, pendants & bracelets' },
+  ];
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [catRes, prodRes] = await Promise.allSettled([
+          productAPI.getCategories(),
+          productAPI.getFeatured(),
+        ]);
+        
+        if (catRes.status === 'fulfilled' && catRes.value.data?.length > 0) {
+          setCategories(catRes.value.data);
+        } else {
+          setCategories(fallbackCategories);
+        }
+
+        if (prodRes.status === 'fulfilled') {
+          const products = prodRes.value.data?.results || prodRes.value.data || [];
+          setFeaturedProducts(products.slice(0, 4));
+        }
+      } catch {
+        setCategories(fallbackCategories);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const categoryEmojis = {
+    'rudraksha': '📿', 'gemstone': '💎', 'mala': '🙏', 'yantra': '🕉️',
+    'crystal': '🔮', 'jewelry': '✨', 'bracelet': '📿', 'pendant': '✨',
+    'ring': '💍', 'default': '🙏',
+  };
+
+  const getCategoryEmoji = (cat) => {
+    if (cat.emoji) return cat.emoji;
+    const name = (cat.name || '').toLowerCase();
+    for (const [key, emoji] of Object.entries(categoryEmojis)) {
+      if (name.includes(key)) return emoji;
+    }
+    return categoryEmojis.default;
+  };
+
   return (
     <div>
       {/* Hero Section */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-soft-mint) 100%)',
-          padding: '4rem 2rem',
-          textAlign: 'center',
-          minHeight: '500px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: '3rem',
-            color: 'var(--spiritual-purple)',
-            marginBottom: '1rem',
-            fontWeight: '700',
-          }}
-        >
-          ✨ Welcome to Spiritual Harmony ✨
-        </h1>
-        <p
-          style={{
-            fontSize: '1.2rem',
-            color: 'var(--text-medium)',
-            marginBottom: '2rem',
-            maxWidth: '600px',
-          }}
-        >
-          Discover wellness products that nurture your mind, body, and soul. Embrace peace and spiritual growth on your unique journey.
-        </p>
-        <Link
-          to="/products"
-          className="btn btn-primary"
-          style={{
-            padding: '0.75rem 2rem',
-            fontSize: '1rem',
-            borderRadius: 'var(--radius-lg)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}
-        >
-          Explore Our Collection <FiArrowRight />
-        </Link>
-      </section>
-
-      {/* Features Section */}
-      <section style={{ padding: '4rem 2rem', backgroundColor: 'var(--primary-cream)' }}>
-        <div className="container">
-          <h2
-            style={{
-              textAlign: 'center',
-              color: 'var(--spiritual-purple)',
-              marginBottom: '3rem',
-              fontSize: '2rem',
-              fontWeight: '700',
-            }}
-          >
-            Why Choose Spiritual Harmony?
-          </h2>
-
-          <div className="row g-4">
-            {/* Feature 1 */}
-            <div className="col-md-4">
-              <div className="card h-100" style={{ borderRadius: 'var(--radius-lg)', border: 'none' }}>
-                <div className="card-body text-center p-4">
-                  <div
-                    style={{
-                      fontSize: '2.5rem',
-                      marginBottom: '1rem',
-                      color: 'var(--spiritual-teal)',
-                    }}
-                  >
-                    <FiHeart />
-                  </div>
-                  <h5 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem', fontWeight: '600' }}>
-                    Curated Selection
-                  </h5>
-                  <p style={{ color: 'var(--text-light)', marginBottom: 0 }}>
-                    Every product is handpicked for quality and spiritual authenticity.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="col-md-4">
-              <div className="card h-100" style={{ borderRadius: 'var(--radius-lg)', border: 'none' }}>
-                <div className="card-body text-center p-4">
-                  <div
-                    style={{
-                      fontSize: '2.5rem',
-                      marginBottom: '1rem',
-                      color: 'var(--accent-sage)',
-                    }}
-                  >
-                    <FiAward />
-                  </div>
-                  <h5 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem', fontWeight: '600' }}>
-                    Premium Quality
-                  </h5>
-                  <p style={{ color: 'var(--text-light)', marginBottom: 0 }}>
-                    Sourced from ethical suppliers with a commitment to sustainability.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="col-md-4">
-              <div className="card h-100" style={{ borderRadius: 'var(--radius-lg)', border: 'none' }}>
-                <div className="card-body text-center p-4">
-                  <div
-                    style={{
-                      fontSize: '2.5rem',
-                      marginBottom: '1rem',
-                      color: 'var(--accent-blush)',
-                    }}
-                  >
-                    <FiTrendingUp />
-                  </div>
-                  <h5 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem', fontWeight: '600' }}>
-                    Growth Journey
-                  </h5>
-                  <p style={{ color: 'var(--text-light)', marginBottom: 0 }}>
-                    Support your personal and spiritual development with intention.
-                  </p>
-                </div>
-              </div>
-            </div>
+      <section className="hero-section">
+        <div className="hero-overlay">
+          <h1 className="hero-title">
+            🙏 Divine Gems & Sacred Rudraksha
+          </h1>
+          <p className="hero-subtitle">
+            Discover authentic Rudraksha beads, precious gemstones, and sacred spiritual items 
+            sourced directly from Nepal, India & Sri Lanka. Each piece is energized and blessed 
+            for your spiritual journey.
+          </p>
+          <div className="d-flex gap-3 justify-content-center flex-wrap">
+            <Link to="/products" className="btn btn-primary btn-lg hero-btn">
+              Shop Collection <FiArrowRight />
+            </Link>
+            <Link to="/about" className="btn btn-outline-light btn-lg hero-btn">
+              Our Story
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Categories Section */}
+      {/* Trust Badges */}
+      <section style={{ padding: '2rem 1rem', backgroundColor: 'var(--primary-pale-gold)' }}>
+        <div className="container">
+          <div className="row g-3 text-center">
+            {[
+              { icon: <FiShield />, title: 'Certified Authentic', desc: 'Lab-tested gemstones' },
+              { icon: <FiStar />, title: 'Energized & Blessed', desc: 'Vedic rituals performed' },
+              { icon: <FiTruck />, title: 'Free Shipping', desc: 'On orders above ₹999' },
+              { icon: <FiGift />, title: 'Gift Packaging', desc: 'Premium box included' },
+            ].map((badge, i) => (
+              <div key={i} className="col-6 col-md-3">
+                <div style={{ color: 'var(--spiritual-gold)', fontSize: '1.8rem', marginBottom: '0.5rem' }}>
+                  {badge.icon}
+                </div>
+                <h6 style={{ color: 'var(--text-dark)', fontWeight: '600', fontSize: '0.9rem' }}>
+                  {badge.title}
+                </h6>
+                <small style={{ color: 'var(--text-light)' }}>{badge.desc}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Shop by Category */}
       <section style={{ padding: '4rem 2rem' }}>
         <div className="container">
-          <h2
-            style={{
-              textAlign: 'center',
-              color: 'var(--spiritual-purple)',
-              marginBottom: '3rem',
-              fontSize: '2rem',
-              fontWeight: '700',
-            }}
-          >
-            Shop by Category
-          </h2>
+          <h2 className="section-title">Shop by Category</h2>
+          <p className="section-subtitle">Explore our divine collection of spiritual products</p>
 
           <div className="row g-4">
-            {[
-              { name: 'Crystals & Minerals', emoji: '💎' },
-              { name: 'Meditation Tools', emoji: '🧘' },
-              { name: 'Aromatherapy', emoji: '🌿' },
-              { name: 'Wellness Books', emoji: '📚' },
-              { name: 'Spiritual Art', emoji: '🎨' },
-              { name: 'Energy Healing', emoji: '✨' },
-            ].map((category, index) => (
-              <div key={index} className="col-md-6 col-lg-4">
+            {(categories.length > 0 ? categories : fallbackCategories).slice(0, 6).map((category, index) => (
+              <div key={category.id || index} className="col-md-6 col-lg-4">
                 <Link
-                  to="/products"
+                  to={`/products?category=${category.slug || category.id}`}
                   style={{ textDecoration: 'none' }}
                 >
-                  <div
-                    style={{
-                      background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-soft-mint) 100%)',
-                      padding: '2rem',
-                      borderRadius: 'var(--radius-lg)',
-                      textAlign: 'center',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      transform: 'scale(1)',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.05)';
-                      e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  >
-                    <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
-                      {category.emoji}
-                    </div>
-                    <h5 style={{ color: 'var(--spiritual-purple)', fontWeight: '600' }}>
-                      {category.name}
-                    </h5>
+                  <div className="category-card">
+                    {category.image ? (
+                      <div className="category-image-wrapper">
+                        <img 
+                          src={category.image} 
+                          alt={category.name} 
+                          loading="lazy"
+                          className="category-image"
+                        />
+                        <div className="category-overlay">
+                          <h5>{category.name}</h5>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>
+                          {getCategoryEmoji(category)}
+                        </div>
+                        <h5 style={{ color: 'var(--spiritual-purple)', fontWeight: '600' }}>
+                          {category.name}
+                        </h5>
+                        <p style={{ color: 'var(--text-light)', fontSize: '0.85rem', margin: 0 }}>
+                          {category.description || 'Explore collection'}
+                        </p>
+                      </>
+                    )}
                   </div>
                 </Link>
               </div>
@@ -204,39 +158,92 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-soft-mint) 100%)',
-          padding: '4rem 2rem',
-          textAlign: 'center',
-        }}
-      >
-        <div className="container" style={{ maxWidth: '500px' }}>
-          <h2
-            style={{
-              color: 'var(--spiritual-purple)',
-              marginBottom: '1rem',
-              fontWeight: '700',
-            }}
-          >
-            Join Our Wellness Community
+      {/* Featured Products */}
+      {featuredProducts.length > 0 && (
+        <section style={{ padding: '4rem 2rem', backgroundColor: 'var(--primary-cream)' }}>
+          <div className="container">
+            <h2 className="section-title">Featured Products</h2>
+            <p className="section-subtitle">Handpicked divine items for you</p>
+            <div className="row g-4">
+              {featuredProducts.map(product => (
+                <div key={product.id} className="col-md-6 col-lg-3">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-4">
+              <Link to="/products" className="btn btn-primary">
+                View All Products <FiArrowRight className="ms-1" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Why Choose Us */}
+      <section style={{ padding: '4rem 2rem', backgroundColor: 'var(--primary-soft-mint)' }}>
+        <div className="container">
+          <h2 className="section-title">Why Choose Divine Gems?</h2>
+          <div className="row g-4 mt-2">
+            {[
+              { 
+                emoji: '📿', 
+                title: 'Authentic Rudraksha', 
+                desc: 'Every Rudraksha is X-ray tested and verified from Nepal orchards. Genuine Mukhi certification provided.' 
+              },
+              { 
+                emoji: '💎', 
+                title: 'Natural Gemstones', 
+                desc: 'Unheated, untreated gemstones with lab certificates. Blue Sapphire, Ruby, Emerald, Pearl & more.' 
+              },
+              { 
+                emoji: '🕉️', 
+                title: 'Vedic Energization', 
+                desc: 'All products undergo proper Vedic Puja and energization by certified priests before shipping.' 
+              },
+              { 
+                emoji: '🔬', 
+                title: 'Lab Certified', 
+                desc: 'Government-approved gem lab certificates included with every gemstone purchase.' 
+              },
+            ].map((item, i) => (
+              <div key={i} className="col-md-6 col-lg-3">
+                <div className="feature-card">
+                  <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>{item.emoji}</div>
+                  <h5 style={{ color: 'var(--spiritual-purple)', fontWeight: '600', marginBottom: '0.5rem' }}>
+                    {item.title}
+                  </h5>
+                  <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', margin: 0 }}>
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section style={{ background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-pale-gold) 100%)', padding: '4rem 2rem', textAlign:  'center' }}>
+        <div className="container" style={{ maxWidth: '550px' }}>
+          <h2 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem', fontWeight: '700' }}>
+            Join Our Spiritual Community
           </h2>
           <p style={{ color: 'var(--text-light)', marginBottom: '2rem' }}>
-            Subscribe to receive spiritual tips, exclusive offers, and product recommendations.
+            Get exclusive deals on Rudraksha & gemstones, Puja dates, and spiritual tips.
           </p>
-          <form style={{ display: 'flex', gap: '0.5rem' }}>
+          <form 
+            style={{ display: 'flex', gap: '0.5rem' }} 
+            onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing! 🙏'); }}
+          >
             <input
               type="email"
               placeholder="Your email address"
               className="form-control"
+              required
               style={{ borderRadius: 'var(--radius-md)' }}
             />
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{ borderRadius: 'var(--radius-md)' }}
-            >
+            <button type="submit" className="btn btn-primary" style={{ borderRadius: 'var(--radius-md)', whiteSpace: 'nowrap' }}>
               Subscribe
             </button>
           </form>

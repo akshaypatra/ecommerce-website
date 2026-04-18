@@ -1,57 +1,66 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { authAPI } from '../services/api';
 
 function LoginPage({ onLogin }) {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
+    first_name: '',
+    last_name: '',
+    phone: '',
     password: '',
-    confirmPassword: '',
+    password2: '',
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
       if (isLogin) {
-        // Mock login
-        const userData = {
-          username: formData.username,
-          email: 'user@example.com',
-        };
-        const token = 'mock-auth-token-' + Date.now();
-        onLogin(userData, token);
+        const res = await authAPI.login(formData.email, formData.password);
+        const { user, tokens } = res.data;
+        onLogin(user, tokens);
         navigate('/');
       } else {
-        // Mock register
-        if (formData.password !== formData.confirmPassword) {
-          alert('Passwords do not match');
+        if (formData.password !== formData.password2) {
+          setError('Passwords do not match');
           setLoading(false);
           return;
         }
-        const userData = {
-          username: formData.username,
+        const res = await authAPI.register({
           email: formData.email,
-        };
-        const token = 'mock-auth-token-' + Date.now();
-        onLogin(userData, token);
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          phone: formData.phone,
+          password: formData.password,
+          password2: formData.password2,
+        });
+        const { user, tokens } = res.data;
+        onLogin(user, tokens);
         navigate('/');
       }
-    } catch (error) {
-      console.error('Auth error:', error);
-      alert('Authentication failed. Please try again.');
+    } catch (err) {
+      const data = err.response?.data;
+      if (typeof data === 'object') {
+        const messages = Object.entries(data)
+          .map(([key, val]) => `${key}: ${Array.isArray(val) ? val.join(', ') : val}`)
+          .join('\n');
+        setError(messages || 'Authentication failed. Please try again.');
+      } else {
+        setError('Unable to connect to server. Please ensure the backend is running.');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,67 +68,77 @@ function LoginPage({ onLogin }) {
 
   return (
     <div className="container py-5">
-      <div
-        style={{
-          maxWidth: '500px',
-          margin: '0 auto',
-          background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-soft-mint) 100%)',
-          padding: '2rem',
-          borderRadius: 'var(--radius-lg)',
-        }}
-      >
-        <h1
-          style={{
-            textAlign: 'center',
-            color: 'var(--spiritual-purple)',
-            marginBottom: '0.5rem',
-            fontSize: '1.8rem',
-          }}
-        >
-          ✨ Spiritual Harmony
-        </h1>
-
-        <p style={{ textAlign: 'center', color: 'var(--text-light)', marginBottom: '2rem' }}>
-          {isLogin ? 'Welcome back to your wellness journey' : 'Begin your spiritual journey with us'}
+      <div className="auth-card">
+        <h1 className="auth-title">🙏 Divine Gems</h1>
+        <p className="auth-subtitle">
+          {isLogin ? 'Welcome back to your spiritual journey' : 'Begin your divine journey with us'}
         </p>
 
+        {error && (
+          <div className="alert alert-danger" style={{ borderRadius: 'var(--radius-md)', fontSize: '0.9rem', whiteSpace: 'pre-line' }}>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label" style={{ fontWeight: '600' }}>Email</label>
+            <input
+              type="email"
+              className="form-control"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="you@example.com"
+              required
+              style={{ borderRadius: 'var(--radius-md)' }}
+            />
+          </div>
+
+          {!isLogin && (
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label" style={{ fontWeight: '600' }}>First Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  style={{ borderRadius: 'var(--radius-md)' }}
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label" style={{ fontWeight: '600' }}>Last Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  style={{ borderRadius: 'var(--radius-md)' }}
+                />
+              </div>
+            </div>
+          )}
+
           {!isLogin && (
             <div className="mb-3">
-              <label className="form-label" style={{ fontWeight: '600' }}>
-                Email
-              </label>
+              <label className="form-label" style={{ fontWeight: '600' }}>Phone</label>
               <input
-                type="email"
+                type="tel"
                 className="form-control"
-                name="email"
-                value={formData.email}
+                name="phone"
+                value={formData.phone}
                 onChange={handleInputChange}
-                required={!isLogin}
+                placeholder="+91 XXXXX XXXXX"
                 style={{ borderRadius: 'var(--radius-md)' }}
               />
             </div>
           )}
 
           <div className="mb-3">
-            <label className="form-label" style={{ fontWeight: '600' }}>
-              {isLogin ? 'Username or Email' : 'Username'}
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              required
-              style={{ borderRadius: 'var(--radius-md)' }}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label" style={{ fontWeight: '600' }}>
-              Password
-            </label>
+            <label className="form-label" style={{ fontWeight: '600' }}>Password</label>
             <input
               type="password"
               className="form-control"
@@ -127,22 +146,22 @@ function LoginPage({ onLogin }) {
               value={formData.password}
               onChange={handleInputChange}
               required
+              minLength={8}
               style={{ borderRadius: 'var(--radius-md)' }}
             />
           </div>
 
           {!isLogin && (
             <div className="mb-3">
-              <label className="form-label" style={{ fontWeight: '600' }}>
-                Confirm Password
-              </label>
+              <label className="form-label" style={{ fontWeight: '600' }}>Confirm Password</label>
               <input
                 type="password"
                 className="form-control"
-                name="confirmPassword"
-                value={formData.confirmPassword}
+                name="password2"
+                value={formData.password2}
                 onChange={handleInputChange}
                 required={!isLogin}
+                minLength={8}
                 style={{ borderRadius: 'var(--radius-md)' }}
               />
             </div>
@@ -152,11 +171,7 @@ function LoginPage({ onLogin }) {
             type="submit"
             disabled={loading}
             className="btn btn-primary w-100 mb-3"
-            style={{
-              borderRadius: 'var(--radius-md)',
-              padding: '0.75rem',
-              fontWeight: '600',
-            }}
+            style={{ borderRadius: 'var(--radius-md)', padding: '0.75rem', fontWeight: '600' }}
           >
             {loading ? 'Processing...' : isLogin ? 'Login' : 'Create Account'}
           </button>
@@ -168,54 +183,18 @@ function LoginPage({ onLogin }) {
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
-                setFormData({ username: '', email: '', password: '', confirmPassword: '' });
+                setError('');
+                setFormData({ email: '', first_name: '', last_name: '', phone: '', password: '', password2: '' });
               }}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--spiritual-teal)',
-                cursor: 'pointer',
-                textDecoration: 'underline',
-                fontWeight: '600',
-              }}
+              className="btn-link-spiritual"
             >
               {isLogin ? 'Sign Up' : 'Login'}
             </button>
           </p>
         </div>
 
-        {isLogin && (
-          <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-            <a
-              href="#forgot"
-              style={{
-                color: 'var(--spiritual-teal)',
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-              }}
-            >
-              Forgot your password?
-            </a>
-          </div>
-        )}
-
-        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-light)', fontSize: '0.85rem', marginBottom: '1rem' }}>
-            Demo credentials: Use any username/password combination
-          </p>
-        </div>
-
-        <div style={{ marginTop: '1rem' }}>
-          <Link
-            to="/"
-            style={{
-              color: 'var(--spiritual-teal)',
-              textDecoration: 'none',
-              fontSize: '0.9rem',
-              display: 'block',
-              textAlign: 'center',
-            }}
-          >
+        <div style={{ marginTop: '1.5rem' }}>
+          <Link to="/" className="btn-link-spiritual d-block text-center" style={{ fontSize: '0.9rem' }}>
             ← Continue as Guest
           </Link>
         </div>

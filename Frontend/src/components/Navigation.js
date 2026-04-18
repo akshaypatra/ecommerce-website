@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiShoppingCart, FiUser, FiMenu, FiLogOut, FiHome } from 'react-icons/fi';
+import { FiShoppingCart, FiUser, FiMenu, FiLogOut, FiHome, FiPackage, FiInfo, FiPhone } from 'react-icons/fi';
 
 function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
     <nav className="navbar navbar-expand-lg sticky-top">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/" style={{ letterSpacing: '1px', fontSize: '1.8rem' }}>
-          ✨ Spiritual Harmony
+          🙏 Divine Gems
         </Link>
 
         <button
@@ -33,13 +33,26 @@ function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
           <ul className="navbar-nav ms-auto gap-2">
             <li className="nav-item">
               <Link className="nav-link" to="/">
-                <FiHome className="me-2" style={{ marginRight: '5px' }} />
+                <FiHome className="me-1" />
                 Home
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/products">
-                Products
+                <FiPackage className="me-1" />
+                Shop
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/about">
+                <FiInfo className="me-1" />
+                About
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/contact">
+                <FiPhone className="me-1" />
+                Contact
               </Link>
             </li>
             
@@ -53,18 +66,27 @@ function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
                 <li className="nav-item dropdown">
                   <a
                     className="nav-link dropdown-toggle"
-                    href="#profile"
+                    href="#!"
                     role="button"
                     data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    onClick={(e) => e.preventDefault()}
                   >
-                    <FiUser className="me-2" style={{ marginRight: '5px' }} />
-                    {user?.username || 'Profile'}
+                    <FiUser className="me-1" />
+                    {user?.first_name || user?.email?.split('@')[0] || 'Profile'}
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end" style={{ background: 'var(--primary-light-lavender)' }}>
                     <li>
-                      <a className="dropdown-item" href="#profile">
+                      <Link className="dropdown-item" to="/profile">
+                        <FiUser className="me-2" />
                         My Profile
-                      </a>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/orders">
+                        <FiPackage className="me-2" />
+                        My Orders
+                      </Link>
                     </li>
                     <li>
                       <hr className="dropdown-divider" />
@@ -85,7 +107,7 @@ function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
             ) : (
               <li className="nav-item">
                 <Link className="nav-link" to="/login">
-                  <FiUser className="me-2" style={{ marginRight: '5px' }} />
+                  <FiUser className="me-1" />
                   Login
                 </Link>
               </li>
@@ -94,7 +116,7 @@ function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
             <li className="nav-item">
               <Link
                 className="nav-link position-relative"
-                to="/cart"
+                to={isLoggedIn ? "/cart" : "/login"}
                 style={{ color: 'var(--spiritual-gold)' }}
               >
                 <FiShoppingCart size={20} />
