@@ -38,6 +38,14 @@ const adminAPI = {
   toggleProductActive: (id) => apiClient.post(`/admin/products/${id}/toggle_active/`),
   toggleProductFeatured: (id) => apiClient.post(`/admin/products/${id}/toggle_featured/`),
 
+  // Product Images
+  getProductImages: (params = {}) => apiClient.get('/admin/product-images/', { params }),
+  createProductImage: (data) => apiClient.post('/admin/product-images/', data, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+  deleteProductImage: (id) => apiClient.delete(`/admin/product-images/${id}/`),
+  setProductImagePrimary: (id) => apiClient.post(`/admin/product-images/${id}/set_primary/`),
+
   // Reviews
   getReviews: (params = {}) => apiClient.get('/admin/reviews/', { params }),
   deleteReview: (id) => apiClient.delete(`/admin/reviews/${id}/`),

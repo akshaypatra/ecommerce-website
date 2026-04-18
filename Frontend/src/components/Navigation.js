@@ -4,6 +4,7 @@ import {
   FiShoppingCart, FiUser, FiMenu, FiX, FiLogOut,
   FiHome, FiPackage, FiInfo, FiPhone, FiChevronDown, FiSettings,
 } from 'react-icons/fi';
+import siteConfig from '../config/siteConfig.json';
 
 function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
         <div className="nav-inner container">
           {/* Brand */}
           <Link className="nav-brand" to="/">
-            <span className="nav-brand-icon">🙏</span> Divine Gems
+            <span className="nav-brand-icon">{siteConfig.brand.emoji}</span> {siteConfig.brand.name}
           </Link>
 
           {/* Desktop Links */}
@@ -166,7 +167,7 @@ function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
       <div className={`mobile-backdrop ${mobileOpen ? 'open' : ''}`} onClick={() => setMobileOpen(false)} />
       <aside className={`mobile-drawer ${mobileOpen ? 'open' : ''}`}>
         <div className="mobile-drawer-header">
-          <span className="nav-brand" style={{ fontSize: '1.25rem' }}>🙏 Divine Gems</span>
+          <span className="nav-brand" style={{ fontSize: '1.25rem' }}>{siteConfig.brand.emoji} {siteConfig.brand.name}</span>
           <button className="nav-hamburger" onClick={() => setMobileOpen(false)} aria-label="Close menu">
             <FiX size={22} />
           </button>

@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { FiMail, FiPhone, FiMapPin, FiSend } from 'react-icons/fi';
+import siteConfig from '../config/siteConfig.json';
 
 function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const { contact, contactPage, brand } = siteConfig;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSending(true);
-    // Simulate sending — replace with real endpoint when backend supports it
     await new Promise(r => setTimeout(r, 1000));
     setSubmitted(true);
     setSending(false);
@@ -17,9 +18,9 @@ function ContactPage() {
 
   return (
     <div className="container py-5">
-      <h1 style={{ color: 'var(--spiritual-purple)', marginBottom: '0.5rem' }}>Contact Us</h1>
+      <h1 style={{ color: 'var(--spiritual-purple)', marginBottom: '0.5rem' }}>{contactPage.title}</h1>
       <p style={{ color: 'var(--text-light)', marginBottom: '2.5rem', fontSize: '1.05rem' }}>
-        Have a question about our products or need astrological guidance? We'd love to hear from you.
+        {contactPage.subtitle}
       </p>
 
       <div className="row g-5">
@@ -27,9 +28,9 @@ function ContactPage() {
         <div className="col-lg-7">
           {submitted ? (
             <div className="empty-state" style={{ background: 'linear-gradient(135deg, var(--primary-soft-mint) 0%, var(--primary-light-lavender) 100%)' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🙏</div>
-              <h3 style={{ color: 'var(--spiritual-purple)', marginBottom: '0.5rem' }}>Message Sent!</h3>
-              <p style={{ color: 'var(--text-light)' }}>We'll get back to you within 24 hours. Namaste!</p>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{brand.emoji}</div>
+              <h3 style={{ color: 'var(--spiritual-purple)', marginBottom: '0.5rem' }}>{contactPage.successTitle}</h3>
+              <p style={{ color: 'var(--text-light)' }}>{contactPage.successMessage}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
@@ -76,7 +77,7 @@ function ContactPage() {
                 <div className="ms-3">
                   <strong style={{ fontSize: '0.9rem' }}>Address</strong>
                   <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: 0 }}>
-                    123 Sacred Lane, Varanasi,<br />Uttar Pradesh 221001, India
+                    {contact.address.full}
                   </p>
                 </div>
               </div>
@@ -86,7 +87,7 @@ function ContactPage() {
                 <div className="ms-3">
                   <strong style={{ fontSize: '0.9rem' }}>Phone</strong>
                   <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: 0 }}>
-                    +91 98765 43210
+                    {contact.phone}
                   </p>
                 </div>
               </div>
@@ -96,7 +97,7 @@ function ContactPage() {
                 <div className="ms-3">
                   <strong style={{ fontSize: '0.9rem' }}>Email</strong>
                   <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: 0 }}>
-                    support@divinegems.in
+                    {contact.email}
                   </p>
                 </div>
               </div>
@@ -104,8 +105,8 @@ function ContactPage() {
               <hr style={{ borderColor: 'var(--accent-lavender)' }} />
 
               <h6 style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Business Hours</h6>
-              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '0.2rem' }}>Mon – Sat: 10:00 AM – 7:00 PM IST</p>
-              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: 0 }}>Sunday: Closed</p>
+              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '0.2rem' }}>{contact.businessHours.weekdays}</p>
+              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: 0 }}>{contact.businessHours.weekend}</p>
             </div>
           </div>
         </div>

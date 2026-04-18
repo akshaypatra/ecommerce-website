@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit2, FiTrash2, FiUpload, FiX, FiStar } from 'react-icons/fi';
 import adminAPI from '../../services/adminApi';
 
 export default function AdminProductDetail() {
@@ -11,6 +11,9 @@ export default function AdminProductDetail() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({});
+  const [newImageFiles, setNewImageFiles] = useState([]);
+  const [newImagePreviews, setNewImagePreviews] = useState([]);
+  const [imageUploading, setImageUploading] = useState(false);
 
   const fetchProduct = useCallback(() => {
     setLoading(true);
@@ -47,6 +50,63 @@ export default function AdminProductDetail() {
     navigate('/admin/products');
   };
 
+  // ─── Image Management ───────────────────────────────────
+  const handleImageSelect = (e) => {
+    const files = Array.from(e.target.files);
+    setNewImageFiles(prev => [...prev, ...files]);
+    const previews = files.map(f => URL.createObjectURL(f));
+    setNewImagePreviews(prev => [...prev, ...previews]);
+  };
+
+  const removeNewImage = (index) => {
+    setNewImageFiles(prev => prev.filter((_, i) => i !== index));
+    setNewImagePreviews(prev => {
+      URL.revokeObjectURL(prev[index]);
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
+  const uploadNewImages = async () => {
+    if (newImageFiles.length === 0) return;
+    setImageUploading(true);
+    try {
+      for (let i = 0; i < newImageFiles.length; i++) {
+        const formData = new FormData();
+        formData.append('product', id);
+        formData.append('image', newImageFiles[i]);
+        formData.append('is_primary', false);
+        formData.append('order', (product.images?.length || 0) + i);
+        await adminAPI.createProductImage(formData);
+      }
+      setNewImageFiles([]);
+      setNewImagePreviews(prev => { prev.forEach(u => URL.revokeObjectURL(u)); return []; });
+      fetchProduct();
+    } catch (err) {
+      alert('Failed to upload images: ' + JSON.stringify(err.response?.data || 'Error'));
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const deleteImage = async (imageId) => {
+    if (!window.confirm('Delete this image?')) return;
+    try {
+      await adminAPI.deleteProductImage(imageId);
+      fetchProduct();
+    } catch (err) {
+      alert('Failed to delete image');
+    }
+  };
+
+  const setPrimary = async (imageId) => {
+    try {
+      await adminAPI.setProductImagePrimary(imageId);
+      fetchProduct();
+    } catch (err) {
+      alert('Failed to set primary image');
+    }
+  };
+
   if (loading) return <div className="admin-loading">Loading...</div>;
   if (!product) return <div className="admin-error">Product not found</div>;
 
@@ -64,6 +124,7 @@ export default function AdminProductDetail() {
         </div>
       </div>
 
+      {/* Product Details Card */}
       <div className="admin-card">
         {editing ? (
           <form onSubmit={handleUpdate} className="admin-form">
@@ -110,21 +171,87 @@ export default function AdminProductDetail() {
               <h4>Description</h4>
               <p>{product.description}</p>
             </div>
-            {product.images && product.images.length > 0 && (
-              <div className="admin-detail-images">
-                <h4>Images</h4>
-                <div className="admin-image-grid">
-                  {product.images.map(img => (
-                    <div key={img.id} className="admin-image-thumb">
-                      <img src={img.image} alt={img.alt_text || product.name} />
-                      {img.is_primary && <span className="admin-badge admin-badge-active">Primary</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </>
         )}
+      </div>
+
+      {/* Image Management Card */}
+      <div className="admin-card" style={{ marginTop: '1.5rem' }}>
+        <div className="admin-card-header">
+          <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Product Images ({product.images?.length || 0})</h4>
+        </div>
+
+        {/* Existing Images */}
+        {product.images && product.images.length > 0 ? (
+          <div className="admin-product-images-grid">
+            {product.images.map(img => (
+              <div key={img.id} className={`admin-product-image-card ${img.is_primary ? 'primary' : ''}`}>
+                <div className="admin-product-image-wrapper">
+                  <img src={img.image} alt={img.alt_text || product.name} />
+                  {img.is_primary && (
+                    <span className="admin-primary-badge"><FiStar size={10} /> Primary</span>
+                  )}
+                </div>
+                <div className="admin-product-image-actions">
+                  {!img.is_primary && (
+                    <button
+                      className="admin-btn admin-btn-sm admin-btn-outline"
+                      onClick={() => setPrimary(img.id)}
+                      title="Set as Primary"
+                    >
+                      <FiStar size={12} /> Primary
+                    </button>
+                  )}
+                  <button
+                    className="admin-btn admin-btn-sm admin-btn-danger"
+                    onClick={() => deleteImage(img.id)}
+                    title="Delete Image"
+                  >
+                    <FiTrash2 size={12} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p style={{ color: '#8e8ea0', padding: '1rem 0', margin: 0 }}>No images uploaded yet.</p>
+        )}
+
+        {/* Upload New Images */}
+        <div className="admin-image-upload-section">
+          <h5 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.75rem' }}>Add New Images</h5>
+          <div className="admin-file-upload">
+            <label className="admin-file-btn">
+              <FiUpload size={14} /> Choose Images
+              <input type="file" accept="image/*" multiple onChange={handleImageSelect} style={{ display: 'none' }} />
+            </label>
+            <span className="admin-text-muted" style={{ fontSize: '0.8rem' }}>
+              {newImageFiles.length} file(s) selected
+            </span>
+          </div>
+          {newImagePreviews.length > 0 && (
+            <>
+              <div className="admin-image-preview-grid" style={{ marginTop: '0.75rem' }}>
+                {newImagePreviews.map((src, i) => (
+                  <div key={i} className="admin-image-preview">
+                    <img src={src} alt={`New ${i + 1}`} />
+                    <button type="button" className="admin-image-remove" onClick={() => removeNewImage(i)}>
+                      <FiX size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button
+                className="admin-btn admin-btn-primary"
+                style={{ marginTop: '0.75rem' }}
+                onClick={uploadNewImages}
+                disabled={imageUploading}
+              >
+                {imageUploading ? 'Uploading...' : `Upload ${newImageFiles.length} Image(s)`}
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

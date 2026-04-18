@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { productAPI } from '../services/api';
 import { FiLoader, FiFilter, FiSearch, FiX } from 'react-icons/fi';
+import siteConfig from '../config/siteConfig.json';
 
 function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,7 +19,7 @@ function ProductsPage() {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Fetch categories on mount
   useEffect(() => {
@@ -95,14 +96,25 @@ function ProductsPage() {
     <div className="container py-4">
       {/* Header */}
       <div className="page-header">
-        <h1>Sacred Collection</h1>
-        <p>Discover authentic Rudraksha, gemstones, and spiritual products</p>
+        <h1>{siteConfig.productsPage.title}</h1>
+        <p>{siteConfig.productsPage.subtitle}</p>
       </div>
 
       <div className="row">
         {/* Sidebar Filters */}
-        <div className={`col-lg-3 mb-4 ${showFilters ? '' : 'd-none d-lg-block'}`}>
-          <div className="filter-card">
+        <div className="col-lg-3 mb-4">
+          {/* Mobile filter toggle */}
+          <div className="d-lg-none mb-3">
+            <button 
+              className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2"
+              onClick={() => setShowFilters(!showFilters)}
+              style={{ borderRadius: 'var(--radius-md)' }}
+            >
+              <FiFilter size={16} />
+              {showFilters ? 'Hide Filters' : 'Show Filters'}
+            </button>
+          </div>
+          <div className={`filter-card filter-collapsible ${showFilters ? 'filter-open' : 'filter-closed'}`}>
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h6 style={{ color: 'var(--spiritual-purple)', fontWeight: '600', margin: 0 }}>
                 <FiFilter className="me-2" />
@@ -206,16 +218,6 @@ function ProductsPage() {
 
         {/* Products Grid */}
         <div className="col-lg-9">
-          {/* Mobile filter toggle */}
-          <div className="d-lg-none mb-3">
-            <button 
-              className="btn btn-outline-primary btn-sm"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <FiFilter className="me-1" />
-              {showFilters ? 'Hide Filters' : 'Show Filters'}
-            </button>
-          </div>
 
           {loading ? (
             <div className="text-center py-5">

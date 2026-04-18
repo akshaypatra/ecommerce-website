@@ -170,8 +170,19 @@ class AdminProductImageViewSet(viewsets.ModelViewSet):
     queryset = ProductImage.objects.select_related('product').all()
     serializer_class = AdminProductImageSerializer
     permission_classes = [IsAdminUser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     pagination_class = AdminPagination
+    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['product', 'is_primary']
+
+    @action(detail=True, methods=['post'])
+    def set_primary(self, request, pk=None):
+        image = self.get_object()
+        # Unset all other primary images for this product
+        ProductImage.objects.filter(product=image.product, is_primary=True).update(is_primary=False)
+        image.is_primary = True
+        image.save(update_fields=['is_primary'])
+        return Response(AdminProductImageSerializer(image).data)
 
 
 # ─── Reviews ─────────────────────────────────────────────────

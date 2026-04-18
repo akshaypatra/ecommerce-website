@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiFacebook, FiTwitter, FiInstagram, FiMail, FiMapPin, FiPhone } from 'react-icons/fi';
+import siteConfig from '../config/siteConfig.json';
 
 function Footer() {
+  const { brand, contact, social, footer } = siteConfig;
+
   return (
     <footer className="py-5 mt-5">
       <div className="container">
@@ -10,15 +13,15 @@ function Footer() {
           {/* Brand */}
           <div className="col-md-3 mb-4 mb-md-0">
             <h5 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem', fontWeight: '600' }}>
-              🙏 Divine Gems
+              {brand.emoji} {brand.name}
             </h5>
             <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', lineHeight: '1.6' }}>
-              Authentic Rudraksha, Gemstones &amp; spiritual products to empower your journey.
+              {brand.tagline}
             </p>
             <div className="d-flex gap-3">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--spiritual-teal)' }}><FiFacebook size={20} /></a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--spiritual-teal)' }}><FiTwitter size={20} /></a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--spiritual-teal)' }}><FiInstagram size={20} /></a>
+              {social.facebook && <a href={social.facebook} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--spiritual-teal)' }}><FiFacebook size={20} /></a>}
+              {social.twitter && <a href={social.twitter} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--spiritual-teal)' }}><FiTwitter size={20} /></a>}
+              {social.instagram && <a href={social.instagram} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--spiritual-teal)' }}><FiInstagram size={20} /></a>}
             </div>
           </div>
 
@@ -26,12 +29,7 @@ function Footer() {
           <div className="col-md-3 mb-4 mb-md-0">
             <h6 style={{ color: 'var(--text-dark)', marginBottom: '1rem', fontWeight: '600' }}>Quick Links</h6>
             <ul style={{ listStyle: 'none', padding: 0 }}>
-              {[
-                { to: '/', label: 'Home' },
-                { to: '/products', label: 'Shop' },
-                { to: '/about', label: 'About Us' },
-                { to: '/contact', label: 'Contact' },
-              ].map(link => (
+              {footer.quickLinks.map(link => (
                 <li key={link.to} className="mb-1">
                   <Link to={link.to} className="footer-link" style={{ color: 'var(--text-light)', textDecoration: 'none' }}>
                     {link.label}
@@ -45,9 +43,11 @@ function Footer() {
           <div className="col-md-3 mb-4 mb-md-0">
             <h6 style={{ color: 'var(--text-dark)', marginBottom: '1rem', fontWeight: '600' }}>Customer Service</h6>
             <ul style={{ listStyle: 'none', padding: 0 }}>
-              {['Shipping Info', 'Returns & Exchanges', 'FAQ', 'Privacy Policy'].map(item => (
-                <li key={item} className="mb-1">
-                  <span className="footer-link" style={{ color: 'var(--text-light)', cursor: 'pointer' }}>{item}</span>
+              {footer.customerService.map(item => (
+                <li key={item.to} className="mb-1">
+                  <Link to={item.to} className="footer-link" style={{ color: 'var(--text-light)', textDecoration: 'none' }}>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -59,15 +59,15 @@ function Footer() {
             <div style={{ color: 'var(--text-light)', fontSize: '0.9rem' }}>
               <div className="mb-2 d-flex align-items-center">
                 <FiMapPin className="me-2" style={{ color: 'var(--spiritual-teal)' }} />
-                <span>123 Sacred Lane, Varanasi, India</span>
+                <span>{contact.address.short}</span>
               </div>
               <div className="mb-2 d-flex align-items-center">
                 <FiPhone className="me-2" style={{ color: 'var(--spiritual-teal)' }} />
-                <span>+91 98765 43210</span>
+                <span>{contact.phone}</span>
               </div>
               <div className="d-flex align-items-center">
                 <FiMail className="me-2" style={{ color: 'var(--spiritual-teal)' }} />
-                <span>support@divinegems.in</span>
+                <span>{contact.email}</span>
               </div>
             </div>
           </div>
@@ -77,10 +77,10 @@ function Footer() {
 
         <div className="row align-items-center">
           <div className="col-md-6 text-center text-md-start" style={{ color: 'var(--text-light)', fontSize: '0.9rem' }}>
-            &copy; {new Date().getFullYear()} Divine Gems. All rights reserved.
+            &copy; {new Date().getFullYear()} {brand.name}. All rights reserved.
           </div>
           <div className="col-md-6 text-center text-md-end" style={{ color: 'var(--text-light)', fontSize: '0.9rem' }}>
-            Made with <span style={{ color: 'var(--spiritual-rose)' }}>💜</span> for your spiritual journey
+            {footer.bottomText}
           </div>
         </div>
       </div>

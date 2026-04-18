@@ -12,6 +12,10 @@ import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import ShippingInfoPage from './pages/ShippingInfoPage';
+import ReturnsExchangesPage from './pages/ReturnsExchangesPage';
+import FAQPage from './pages/FAQPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -146,6 +150,10 @@ function AppContent({ cartCount, isLoggedIn, user, setUser, handleLogout, update
             />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/shipping-info" element={<ShippingInfoPage />} />
+            <Route path="/returns-exchanges" element={<ReturnsExchangesPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route 
               path="/login" 
               element={

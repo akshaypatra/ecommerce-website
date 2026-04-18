@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight, FiShield, FiStar, FiTruck, FiGift } from 'react-icons/fi';
 import { productAPI } from '../services/api';
 import ProductCard from '../components/ProductCard';
+import siteConfig from '../config/siteConfig.json';
+
+const iconMap = { FiShield: <FiShield />, FiStar: <FiStar />, FiTruck: <FiTruck />, FiGift: <FiGift /> };
 
 function HomePage() {
   const [categories, setCategories] = useState([]);
@@ -10,15 +13,7 @@ function HomePage() {
   // eslint-disable-next-line
   const [loading, setLoading] = useState(true);
 
-  // Fallback categories when API is unavailable
-  const fallbackCategories = [
-    { id: 1, name: 'Rudraksha Beads', slug: 'rudraksha-beads', emoji: '📿', description: 'Sacred seeds of Lord Shiva for spiritual protection' },
-    { id: 2, name: 'Gemstones', slug: 'gemstones', emoji: '💎', description: 'Natural precious & semi-precious healing stones' },
-    { id: 3, name: 'Malas & Rosaries', slug: 'malas-rosaries', emoji: '🙏', description: 'Handcrafted prayer beads for meditation' },
-    { id: 4, name: 'Yantras', slug: 'yantras', emoji: '🕉️', description: 'Sacred geometric diagrams for energy & prosperity' },
-    { id: 5, name: 'Crystal Healing', slug: 'crystal-healing', emoji: '🔮', description: 'Natural crystals for chakra balancing' },
-    { id: 6, name: 'Spiritual Jewelry', slug: 'spiritual-jewelry', emoji: '✨', description: 'Blessed rings, pendants & bracelets' },
-  ];
+  const { hero, trustBadges, fallbackCategories, whyChooseUs, newsletter } = siteConfig;
 
   useEffect(() => {
     const loadData = async () => {
@@ -69,19 +64,17 @@ function HomePage() {
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">
-            Divine Gems &amp; Sacred Rudraksha
+            {hero.title}
           </h1>
           <p className="hero-subtitle">
-            Discover authentic Rudraksha beads, precious gemstones, and sacred spiritual items 
-            sourced directly from Nepal, India &amp; Sri Lanka — energized and blessed 
-            for your spiritual journey.
+            {hero.subtitle}
           </p>
           <div className="d-flex gap-3 justify-content-center flex-wrap">
-            <Link to="/products" className="hero-btn hero-btn-primary">
-              Shop Collection <FiArrowRight />
+            <Link to={hero.primaryCTA.link} className="hero-btn hero-btn-primary">
+              {hero.primaryCTA.label} <FiArrowRight />
             </Link>
-            <Link to="/about" className="hero-btn hero-btn-outline">
-              Our Story
+            <Link to={hero.secondaryCTA.link} className="hero-btn hero-btn-outline">
+              {hero.secondaryCTA.label}
             </Link>
           </div>
         </div>
@@ -91,15 +84,10 @@ function HomePage() {
       <section className="trust-bar">
         <div className="container">
           <div className="row g-3 text-center">
-            {[
-              { icon: <FiShield />, title: 'Certified Authentic', desc: 'Lab-tested gemstones' },
-              { icon: <FiStar />, title: 'Energized & Blessed', desc: 'Vedic rituals performed' },
-              { icon: <FiTruck />, title: 'Free Shipping', desc: 'On orders above ₹999' },
-              { icon: <FiGift />, title: 'Gift Packaging', desc: 'Premium box included' },
-            ].map((badge, i) => (
+            {trustBadges.map((badge, i) => (
               <div key={i} className="col-6 col-md-3">
                 <div className="trust-item">
-                  <div className="trust-icon">{badge.icon}</div>
+                  <div className="trust-icon">{iconMap[badge.icon] || badge.icon}</div>
                   <div className="trust-title">{badge.title}</div>
                   <div className="trust-desc">{badge.desc}</div>
                 </div>
@@ -181,30 +169,9 @@ function HomePage() {
       {/* Why Choose Us */}
       <section className="py-5">
         <div className="container">
-          <h2 className="section-title">Why Choose Divine Gems?</h2>
+          <h2 className="section-title">Why Choose {siteConfig.brand.name}?</h2>
           <div className="row g-4 mt-2">
-            {[
-              { 
-                emoji: '📿', 
-                title: 'Authentic Rudraksha', 
-                desc: 'Every Rudraksha is X-ray tested and verified from Nepal orchards. Genuine Mukhi certification provided.' 
-              },
-              { 
-                emoji: '💎', 
-                title: 'Natural Gemstones', 
-                desc: 'Unheated, untreated gemstones with lab certificates. Blue Sapphire, Ruby, Emerald, Pearl & more.' 
-              },
-              { 
-                emoji: '🕉️', 
-                title: 'Vedic Energization', 
-                desc: 'All products undergo proper Vedic Puja and energization by certified priests before shipping.' 
-              },
-              { 
-                emoji: '🔬', 
-                title: 'Lab Certified', 
-                desc: 'Government-approved gem lab certificates included with every gemstone purchase.' 
-              },
-            ].map((item, i) => (
+            {whyChooseUs.map((item, i) => (
               <div key={i} className="col-md-6 col-lg-3">
                 <div className="feature-card">
                   <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>{item.emoji}</div>
@@ -225,14 +192,14 @@ function HomePage() {
       <section className="py-5" style={{ background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-pale-gold) 100%)', textAlign: 'center' }}>
         <div className="container" style={{ maxWidth: '550px' }}>
           <h2 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem', fontWeight: '700' }}>
-            Join Our Spiritual Community
+            {newsletter.title}
           </h2>
           <p style={{ color: 'var(--text-light)', marginBottom: '2rem' }}>
-            Get exclusive deals on Rudraksha & gemstones, Puja dates, and spiritual tips.
+            {newsletter.subtitle}
           </p>
           <form 
             style={{ display: 'flex', gap: '0.5rem' }} 
-            onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing! 🙏'); }}
+            onSubmit={(e) => { e.preventDefault(); alert(newsletter.successMessage); }}
           >
             <input
               type="email"
