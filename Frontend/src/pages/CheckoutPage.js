@@ -27,8 +27,10 @@ function CheckoutPage() {
           authAPI.getAddresses(),
         ]);
         setCart(cartRes.data);
-        setAddresses(addrRes.data || []);
-        const defaultAddr = (addrRes.data || []).find(a => a.is_default) || (addrRes.data || [])[0];
+        const addrData = Array.isArray(addrRes.data) ? addrRes.data
+          : Array.isArray(addrRes.data?.results) ? addrRes.data.results : [];
+        setAddresses(addrData);
+        const defaultAddr = addrData.find(a => a.is_default) || addrData[0];
         if (defaultAddr) setSelectedAddress(defaultAddr.id);
       } catch (err) {
         console.error('Error loading checkout data:', err);
@@ -43,7 +45,7 @@ function CheckoutPage() {
     e.preventDefault();
     try {
       const res = await authAPI.createAddress(addressForm);
-      setAddresses(prev => [...prev, res.data]);
+      setAddresses(prev => Array.isArray(prev) ? [...prev, res.data] : [res.data]);
       setSelectedAddress(res.data.id);
       setShowAddressForm(false);
       setAddressForm({

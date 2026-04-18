@@ -67,20 +67,20 @@ function HomePage() {
     <div>
       {/* Hero Section */}
       <section className="hero-section">
-        <div className="hero-overlay">
+        <div className="hero-content">
           <h1 className="hero-title">
-            🙏 Divine Gems & Sacred Rudraksha
+            Divine Gems &amp; Sacred Rudraksha
           </h1>
           <p className="hero-subtitle">
             Discover authentic Rudraksha beads, precious gemstones, and sacred spiritual items 
-            sourced directly from Nepal, India & Sri Lanka. Each piece is energized and blessed 
+            sourced directly from Nepal, India &amp; Sri Lanka — energized and blessed 
             for your spiritual journey.
           </p>
           <div className="d-flex gap-3 justify-content-center flex-wrap">
-            <Link to="/products" className="btn btn-primary btn-lg hero-btn">
+            <Link to="/products" className="hero-btn hero-btn-primary">
               Shop Collection <FiArrowRight />
             </Link>
-            <Link to="/about" className="btn btn-outline-light btn-lg hero-btn">
+            <Link to="/about" className="hero-btn hero-btn-outline">
               Our Story
             </Link>
           </div>
@@ -88,7 +88,7 @@ function HomePage() {
       </section>
 
       {/* Trust Badges */}
-      <section style={{ padding: '2rem 1rem', backgroundColor: 'var(--primary-pale-gold)' }}>
+      <section className="trust-bar">
         <div className="container">
           <div className="row g-3 text-center">
             {[
@@ -98,13 +98,11 @@ function HomePage() {
               { icon: <FiGift />, title: 'Gift Packaging', desc: 'Premium box included' },
             ].map((badge, i) => (
               <div key={i} className="col-6 col-md-3">
-                <div style={{ color: 'var(--spiritual-gold)', fontSize: '1.8rem', marginBottom: '0.5rem' }}>
-                  {badge.icon}
+                <div className="trust-item">
+                  <div className="trust-icon">{badge.icon}</div>
+                  <div className="trust-title">{badge.title}</div>
+                  <div className="trust-desc">{badge.desc}</div>
                 </div>
-                <h6 style={{ color: 'var(--text-dark)', fontWeight: '600', fontSize: '0.9rem' }}>
-                  {badge.title}
-                </h6>
-                <small style={{ color: 'var(--text-light)' }}>{badge.desc}</small>
               </div>
             ))}
           </div>
@@ -112,7 +110,7 @@ function HomePage() {
       </section>
 
       {/* Shop by Category */}
-      <section style={{ padding: '4rem 2rem' }}>
+      <section className="py-5">
         <div className="container">
           <h2 className="section-title">Shop by Category</h2>
           <p className="section-subtitle">Explore our divine collection of spiritual products</p>
@@ -160,7 +158,7 @@ function HomePage() {
 
       {/* Featured Products */}
       {featuredProducts.length > 0 && (
-        <section style={{ padding: '4rem 2rem', backgroundColor: 'var(--primary-cream)' }}>
+        <section className="py-5" style={{ background: 'var(--bg)' }}>
           <div className="container">
             <h2 className="section-title">Featured Products</h2>
             <p className="section-subtitle">Handpicked divine items for you</p>
@@ -181,7 +179,7 @@ function HomePage() {
       )}
 
       {/* Why Choose Us */}
-      <section style={{ padding: '4rem 2rem', backgroundColor: 'var(--primary-soft-mint)' }}>
+      <section className="py-5">
         <div className="container">
           <h2 className="section-title">Why Choose Divine Gems?</h2>
           <div className="row g-4 mt-2">
@@ -224,7 +222,7 @@ function HomePage() {
       </section>
 
       {/* Newsletter */}
-      <section style={{ background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-pale-gold) 100%)', padding: '4rem 2rem', textAlign:  'center' }}>
+      <section className="py-5" style={{ background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-pale-gold) 100%)', textAlign: 'center' }}>
         <div className="container" style={{ maxWidth: '550px' }}>
           <h2 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem', fontWeight: '700' }}>
             Join Our Spiritual Community

@@ -25,7 +25,9 @@ function ProfilePage({ user, setUser }) {
       ]);
       const p = profileRes.data;
       setProfileForm({ first_name: p.first_name || '', last_name: p.last_name || '', phone: p.phone || '' });
-      setAddresses(addrRes.data || []);
+      const addrData = Array.isArray(addrRes.data) ? addrRes.data
+        : Array.isArray(addrRes.data?.results) ? addrRes.data.results : [];
+      setAddresses(addrData);
       if (setUser) setUser(p);
     } catch (err) {
       console.error('Failed to load profile:', err);
@@ -53,7 +55,7 @@ function ProfilePage({ user, setUser }) {
     e.preventDefault();
     try {
       const res = await authAPI.createAddress(addressForm);
-      setAddresses(prev => [...prev, res.data]);
+      setAddresses(prev => Array.isArray(prev) ? [...prev, res.data] : [res.data]);
       setShowAddressForm(false);
       setAddressForm({
         full_name: '', phone: '', address_line1: '', address_line2: '',

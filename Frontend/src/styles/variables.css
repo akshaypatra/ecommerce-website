@@ -1,77 +1,102 @@
-/* Spiritual Light Color Palette */
+/* ===== Divine Gems — Design Tokens ===== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
-  /* Primary Colors - Soft & Spiritual */
-  --primary-cream: #f5f3f0;
-  --primary-light-lavender: #e8e0f0;
-  --primary-soft-mint: #e8f5f0;
+  /* Primary Palette */
+  --primary-cream: #faf9f7;
+  --primary-light-lavender: #f0ebf8;
+  --primary-soft-mint: #edf7f3;
   --primary-pale-gold: #fef9e7;
-  --primary-soft-rose: #ffe8e8;
-  
-  /* Accent Colors - Spiritual Harmony */
+  --primary-soft-rose: #fff0f0;
+
+  /* Accent Colors */
   --accent-lavender: #c4b5fd;
-  --accent-sage: #a8d5ba;
-  --accent-sky-blue: #b3d9ff;
+  --accent-sage: #86cfa3;
+  --accent-sky-blue: #93c5fd;
   --accent-warm-sand: #f5deb3;
   --accent-blush: #ffc0d9;
-  
-  /* Text Colors */
-  --text-dark: #4a4a4a;
-  --text-medium: #6b6b6b;
-  --text-light: #9a9a9a;
-  
-  /* Accent Spiritual Colors */
-  --spiritual-purple: #9966cc;
-  --spiritual-teal: #66b3a1;
-  --spiritual-gold: #d4af37;
-  --spiritual-rose: #d4a5a5;
-  
-  /* Utility Colors */
+
+  /* Text */
+  --text-dark: #1e1e2f;
+  --text-medium: #555568;
+  --text-light: #8e8ea0;
+  --text-muted: #b5b5c3;
+
+  /* Brand Colors */
+  --spiritual-purple: #7c3aed;
+  --spiritual-purple-soft: #a78bfa;
+  --spiritual-teal: #14b8a6;
+  --spiritual-teal-dark: #0d9488;
+  --spiritual-gold: #d97706;
+  --spiritual-rose: #f43f5e;
+
+  /* Utility */
   --white: #ffffff;
-  --success: #66b366;
-  --warning: #f5a623;
-  --danger: #e85d75;
-  --info: #5dade2;
-  
-  /* Spacing & Typography */
+  --surface: #ffffff;
+  --bg: #faf9f7;
+  --border-color: #e5e7eb;
+  --border-light: #f3f4f6;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+
+  /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
-  
-  /* Border Radius */
-  --radius-sm: 0.25rem;
+  --spacing-3xl: 4rem;
+  --section-py: 5rem;
+
+  /* Radius */
+  --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
-  --radius-lg: 1rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
   --radius-full: 9999px;
-  
+
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(74, 74, 74, 0.05);
-  --shadow-md: 0 4px 6px rgba(74, 74, 74, 0.1);
-  --shadow-lg: 0 10px 15px rgba(74, 74, 74, 0.1);
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.10), 0 8px 10px -6px rgba(0,0,0,0.05);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* Nav height (for sticky offsets) */
+  --nav-height: 64px;
 }
 
-* {
+/* ===== Base Reset ===== */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--primary-cream);
-  color: var(--text-dark);
-  line-height: 1.6;
-}
-
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
-/* Smooth Transitions */
-a, button {
-  transition: all 0.3s ease;
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg);
+  color: var(--text-dark);
+  line-height: 1.6;
+  font-size: 15px;
 }
+
+a { transition: color var(--transition-fast); }
+button { cursor: pointer; transition: all var(--transition-fast); }
+img { max-width: 100%; display: block; }
