@@ -24,6 +24,9 @@ urlpatterns = [
     # Payment Service
     path('api/payments/', include('payments.urls')),
 
+    # Admin API (React admin panel)
+    path('api/admin/', include('admin_api.urls')),
+
     # Social Auth (Google OAuth redirect)
     path('social-auth/', include('social_django.urls', namespace='social')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

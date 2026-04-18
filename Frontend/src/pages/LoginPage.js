@@ -146,7 +146,6 @@ function LoginPage({ onLogin }) {
               value={formData.password}
               onChange={handleInputChange}
               required
-              minLength={8}
               style={{ borderRadius: 'var(--radius-md)' }}
             />
           </div>
@@ -161,7 +160,6 @@ function LoginPage({ onLogin }) {
                 value={formData.password2}
                 onChange={handleInputChange}
                 required={!isLogin}
-                minLength={8}
                 style={{ borderRadius: 'var(--radius-md)' }}
               />
             </div>

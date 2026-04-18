@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   FiShoppingCart, FiUser, FiMenu, FiX, FiLogOut,
-  FiHome, FiPackage, FiInfo, FiPhone, FiChevronDown,
+  FiHome, FiPackage, FiInfo, FiPhone, FiChevronDown, FiSettings,
 } from 'react-icons/fi';
 
 function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
@@ -112,6 +112,11 @@ function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
                       <Link to="/orders" className="nav-dropdown-item">
                         <FiPackage size={15} /> My Orders
                       </Link>
+                      {user?.is_staff && (
+                        <Link to="/admin" className="nav-dropdown-item">
+                          <FiSettings size={15} /> Admin Panel
+                        </Link>
+                      )}
                       <div className="nav-dropdown-divider" />
                       <button className="nav-dropdown-item" onClick={handleLogout}>
                         <FiLogOut size={15} /> Logout
@@ -204,6 +209,13 @@ function Navigation({ cartItemCount, isLoggedIn, user, onLogout }) {
                   <FiUser size={16} /> My Profile
                 </Link>
               </li>
+              {user?.is_staff && (
+                <li>
+                  <Link to="/admin" className={`mobile-nav-link ${isActive('/admin') ? 'active' : ''}`}>
+                    <FiSettings size={16} /> Admin Panel
+                  </Link>
+                </li>
+              )}
               <li className="mobile-nav-divider" />
               <li>
                 <button className="mobile-nav-link" onClick={handleLogout} style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left', cursor: 'pointer' }}>

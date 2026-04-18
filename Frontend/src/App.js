@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -12,6 +12,19 @@ import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+// Admin Pages
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminUserDetail from './pages/admin/AdminUserDetail';
+import AdminCategories from './pages/admin/AdminCategories';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminProductDetail from './pages/admin/AdminProductDetail';
+import AdminOrders from './pages/admin/AdminOrders';
+import AdminOrderDetail from './pages/admin/AdminOrderDetail';
+import AdminPayments from './pages/admin/AdminPayments';
+import AdminReviews from './pages/admin/AdminReviews';
+import AdminAddresses from './pages/admin/AdminAddresses';
 import './styles/global.css';
 
 function App() {
@@ -63,16 +76,36 @@ function App() {
 
   return (
     <Router>
-      <div className="d-flex flex-column min-vh-100">
+      <AppContent
+        cartCount={cartCount}
+        isLoggedIn={isLoggedIn}
+        user={user}
+        setUser={setUser}
+        handleLogout={handleLogout}
+        updateCartCount={updateCartCount}
+        handleLogin={handleLogin}
+      />
+    </Router>
+  );
+}
+
+function AppContent({ cartCount, isLoggedIn, user, setUser, handleLogout, updateCartCount, handleLogin }) {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+
+  return (
+    <div className={isAdmin ? '' : 'd-flex flex-column min-vh-100'}>
+      {!isAdmin && (
         <Navigation 
           cartItemCount={cartCount} 
           isLoggedIn={isLoggedIn}
           user={user}
           onLogout={handleLogout}
         />
-        
-        <main className="flex-grow-1">
-          <Routes>
+      )}
+      
+      <main className={isAdmin ? '' : 'flex-grow-1'}>
+        <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route 
@@ -121,12 +154,32 @@ function App() {
                   : <LoginPage onLogin={handleLogin} />
               } 
             />
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                isLoggedIn && user?.is_staff
+                  ? <AdminLayout user={user} />
+                  : <Navigate to="/login" replace />
+              }
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="users/:id" element={<AdminUserDetail />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="products/:id" element={<AdminProductDetail />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="orders/:id" element={<AdminOrderDetail />} />
+              <Route path="payments" element={<AdminPayments />} />
+              <Route path="reviews" element={<AdminReviews />} />
+              <Route path="addresses" element={<AdminAddresses />} />
+            </Route>
           </Routes>
         </main>
         
-        <Footer />
+        {!isAdmin && <Footer />}
       </div>
-    </Router>
   );
 }
 

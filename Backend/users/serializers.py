@@ -38,8 +38,8 @@ class LoginSerializer(serializers.Serializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'avatar', 'date_joined']
-        read_only_fields = ['id', 'email', 'date_joined']
+        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'avatar', 'date_joined', 'is_staff']
+        read_only_fields = ['id', 'email', 'date_joined', 'is_staff']
 
 
 class AddressSerializer(serializers.ModelSerializer):
