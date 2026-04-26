@@ -1,0 +1,35 @@
+# Render Blueprint — auto-configures services from this file
+# Deploy: https://render.com/deploy → connect repo → it reads this file
+
+services:
+  - type: web
+    name: vastu-api
+    runtime: python
+    rootDir: Backend
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 120
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: "vastu-api.onrender.com,api.stonesbyvastu.in"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://stonesbyvastu.in,https://www.stonesbyvastu.in"
+      - key: FRONTEND_URL
+        value: "https://stonesbyvastu.in"
+      - key: PYTHON_VERSION
+        value: "3.12.4"
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+    plan: free
+    healthCheckPath: /api/products/
