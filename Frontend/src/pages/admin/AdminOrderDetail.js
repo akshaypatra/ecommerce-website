@@ -10,6 +10,7 @@ export default function AdminOrderDetail() {
   const [newStatus, setNewStatus] = useState('');
   const [statusNote, setStatusNote] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [reverting, setReverting] = useState(false);
 
   const fetchOrder = useCallback(() => {
     setLoading(true);
@@ -32,6 +33,19 @@ export default function AdminOrderDetail() {
       alert(JSON.stringify(err.response?.data || 'Error'));
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleRevertPayment = async () => {
+    if (!window.confirm(`Revert payment of ₹${Number(order.total).toLocaleString('en-IN')} for this cancelled order?`)) return;
+    setReverting(true);
+    try {
+      await adminAPI.revertPayment(order.order_id);
+      fetchOrder();
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to revert payment.');
+    } finally {
+      setReverting(false);
     }
   };
 
@@ -97,6 +111,32 @@ export default function AdminOrderDetail() {
           </button>
         </div>
       </div>
+
+      {/* Revert Payment — Only for cancelled orders with non-refunded payment */}
+      {order.status === 'cancelled' && order.payment_status !== 'refunded' && (
+        <div className="admin-card" style={{ marginTop: '1rem', border: '1px solid #c44536' }}>
+          <h3 className="admin-card-title" style={{ color: '#c44536' }}>Revert Payment</h3>
+          <p style={{ fontSize: '0.9rem', color: '#5c4033', marginBottom: '0.75rem' }}>
+            This order was cancelled by the customer. Revert the payment of <strong>₹{Number(order.total).toLocaleString('en-IN')}</strong> to mark it as refunded.
+          </p>
+          <button
+            className="admin-btn"
+            style={{ background: '#c44536', color: '#fff', border: 'none' }}
+            onClick={handleRevertPayment}
+            disabled={reverting}
+          >
+            {reverting ? 'Processing Refund...' : 'Revert Payment / Mark Refunded'}
+          </button>
+        </div>
+      )}
+
+      {order.payment_status === 'refunded' && (
+        <div className="admin-card" style={{ marginTop: '1rem', border: '1px solid #5a8a3c', background: 'rgba(90,138,60,0.05)' }}>
+          <p style={{ color: '#5a8a3c', fontWeight: '600', margin: 0 }}>
+            Payment has been refunded for this order.
+          </p>
+        </div>
+      )}
 
       {/* Order Items */}
       <div className="admin-card" style={{ marginTop: '1rem' }}>

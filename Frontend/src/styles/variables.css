@@ -1,45 +1,45 @@
-/* ===== Divine Gems — Design Tokens ===== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+/* ===== VASTU — Luxury Spiritual Design Tokens ===== */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  /* Primary Palette */
-  --primary-cream: #faf9f7;
-  --primary-light-lavender: #f0ebf8;
-  --primary-soft-mint: #edf7f3;
-  --primary-pale-gold: #fef9e7;
-  --primary-soft-rose: #fff0f0;
+  /* Primary Palette — Luxury Cream & Sage */
+  --primary-cream: #f7f4e9;
+  --primary-light-lavender: #eee8b233;
+  --primary-soft-mint: #96cdb01a;
+  --primary-pale-gold: #eee8b2;
+  --primary-soft-rose: #f2edda;
 
-  /* Accent Colors */
-  --accent-lavender: #c4b5fd;
-  --accent-sage: #86cfa3;
-  --accent-sky-blue: #93c5fd;
-  --accent-warm-sand: #f5deb3;
-  --accent-blush: #ffc0d9;
+  /* Accent Colors — Gold & Emerald */
+  --accent-lavender: #c18d52;
+  --accent-sage: #5abf76;
+  --accent-sky-blue: #96cdb0;
+  --accent-warm-sand: #eee8b2;
+  --accent-blush: #d4b87a;
 
   /* Text */
-  --text-dark: #1e1e2f;
-  --text-medium: #555568;
-  --text-light: #8e8ea0;
-  --text-muted: #b5b5c3;
+  --text-dark: #081b1b;
+  --text-medium: #203b37;
+  --text-light: #3d5c56;
+  --text-muted: #7a9e96;
 
-  /* Brand Colors */
-  --spiritual-purple: #7c3aed;
-  --spiritual-purple-soft: #a78bfa;
-  --spiritual-teal: #14b8a6;
-  --spiritual-teal-dark: #0d9488;
-  --spiritual-gold: #d97706;
-  --spiritual-rose: #f43f5e;
+  /* Brand Colors — Deep Teal & Gold */
+  --spiritual-purple: #081b1b;
+  --spiritual-purple-soft: #203b37;
+  --spiritual-teal: #203b37;
+  --spiritual-teal-dark: #081b1b;
+  --spiritual-gold: #c18d52;
+  --spiritual-rose: #c44536;
 
   /* Utility */
-  --white: #ffffff;
-  --surface: #ffffff;
-  --bg: #faf9f7;
-  --border-color: #e5e7eb;
-  --border-light: #f3f4f6;
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --info: #3b82f6;
+  --white: #fefcf5;
+  --surface: #fefcf5;
+  --bg: #f7f4e9;
+  --border-color: #ddd8c4;
+  --border-light: #eee8b2;
+  --success: #5abf76;
+  --warning: #c18d52;
+  --danger: #c44536;
+  --info: #5abf76;
 
   /* Spacing */
   --spacing-xs: 0.25rem;

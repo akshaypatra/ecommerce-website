@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.18">
+  <!-- Decorative outer ring -->
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#d4a04a" stroke-width="0.4" stroke-dasharray="3,6" opacity="0.4"/>
+  <circle cx="100" cy="100" r="90" fill="none" stroke="#d4a04a" stroke-width="0.6" opacity="0.6"/>
+  <!-- Om symbol (ॐ) centred using dominant-baseline -->
+  <text x="100" y="100" text-anchor="middle" dominant-baseline="central" font-size="120" font-family="serif" fill="#d4a04a" fill-opacity="0.7">&#x0950;</text>
+</svg>

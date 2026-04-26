@@ -69,10 +69,9 @@ function LoginPage({ onLogin }) {
   return (
     <div className="container py-5">
       <div className="auth-card">
-        <h1 className="auth-title">🙏 Divine Gems</h1>
-        <p className="auth-subtitle">
+        <h3 className="auth-subtitle">
           {isLogin ? 'Welcome back to your spiritual journey' : 'Begin your divine journey with us'}
-        </p>
+        </h3>
 
         {error && (
           <div className="alert alert-danger" style={{ borderRadius: 'var(--radius-md)', fontSize: '0.9rem', whiteSpace: 'pre-line' }}>

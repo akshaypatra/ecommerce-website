@@ -1,8 +1,8 @@
 {
   "brand": {
-    "name": "Divine",
+    "name": "VASTU",
     "emoji": "🙏",
-    "tagline": "Authentic Rudraksha, Gemstones & spiritual products to empower your journey.",
+    "tagline": "Authentic Rudraksha, natural healing stones & spiritual products — sourced with trust, purity and purpose.",
     "since": 2020,
     "logo": null
   },
@@ -18,7 +18,7 @@
       "short": "123 Sacred Lane, Varanasi, India"
     },
     "phone": "+91 98765 43210",
-    "email": "support@divinegems.in",
+    "email": "support@vastu.in",
     "businessHours": {
       "weekdays": "Mon – Sat: 10:00 AM – 7:00 PM IST",
       "weekend": "Sunday: Closed"
@@ -32,69 +32,76 @@
   },
 
   "hero": {
-    "title": "Divine Gems & Sacred Rudraksha",
-    "subtitle": "Discover authentic Rudraksha beads, precious gemstones, and sacred spiritual items sourced directly from Nepal, India & Sri Lanka — energized and blessed for your spiritual journey.",
+    "title": "VASTU — Authentic Rudraksha & Natural Healing Stones",
+    "subtitle": "Energy shapes our lives, and ancient wisdom still holds the power to guide us. Discover authentic Rudraksha beads and natural healing stones — each piece carefully selected for its authenticity, energy, and purpose.",
     "primaryCTA": { "label": "Shop Collection", "link": "/products" },
     "secondaryCTA": { "label": "Our Story", "link": "/about" }
   },
 
   "trustBadges": [
-    { "icon": "FiShield", "title": "Certified Authentic", "desc": "Lab-tested gemstones" },
+    { "icon": "FiShield", "title": "100% Authentic", "desc": "Genuine stones, verified origin" },
     { "icon": "FiStar", "title": "Energized & Blessed", "desc": "Vedic rituals performed" },
     { "icon": "FiTruck", "title": "Free Shipping", "desc": "On orders above ₹999" },
-    { "icon": "FiGift", "title": "Gift Packaging", "desc": "Premium box included" }
+    { "icon": "FiGift", "title": "Premium Packaging", "desc": "Sacred gift box included" }
   ],
 
   "fallbackCategories": [
     { "id": 1, "name": "Rudraksha Beads", "slug": "rudraksha-beads", "emoji": "📿", "description": "Sacred seeds of Lord Shiva for spiritual protection" },
-    { "id": 2, "name": "Gemstones", "slug": "gemstones", "emoji": "💎", "description": "Natural precious & semi-precious healing stones" },
+    { "id": 2, "name": "Natural Healing Stones", "slug": "healing-stones", "emoji": "💎", "description": "Authentic stones sourced from their true origins" },
     { "id": 3, "name": "Malas & Rosaries", "slug": "malas-rosaries", "emoji": "🙏", "description": "Handcrafted prayer beads for meditation" },
     { "id": 4, "name": "Yantras", "slug": "yantras", "emoji": "🕉️", "description": "Sacred geometric diagrams for energy & prosperity" },
     { "id": 5, "name": "Crystal Healing", "slug": "crystal-healing", "emoji": "🔮", "description": "Natural crystals for chakra balancing" },
     { "id": 6, "name": "Spiritual Jewelry", "slug": "spiritual-jewelry", "emoji": "✨", "description": "Blessed rings, pendants & bracelets" }
   ],
 
+  "speciality": {
+    "title": "Our Speciality",
+    "desc": "At VASTU, authenticity is our foundation. We source our natural stones directly from the regions they truly belong to — ensuring their originality, purity, and natural energy remain intact. Each stone is carefully selected and imported with precision, so what reaches you is not just a product, but its true, untouched essence."
+  },
+
   "whyChooseUs": [
-    { "emoji": "📿", "title": "Authentic Rudraksha", "desc": "Every Rudraksha is X-ray tested and verified from Nepal orchards. Genuine Mukhi certification provided." },
-    { "emoji": "💎", "title": "Natural Gemstones", "desc": "Unheated, untreated gemstones with lab certificates. Blue Sapphire, Ruby, Emerald, Pearl & more." },
-    { "emoji": "🕉️", "title": "Vedic Energization", "desc": "All products undergo proper Vedic Puja and energization by certified priests before shipping." },
-    { "emoji": "🔬", "title": "Lab Certified", "desc": "Government-approved gem lab certificates included with every gemstone purchase." }
+    { "emoji": "📿", "title": "Authentic Rudraksha", "desc": "Every Rudraksha is X-ray tested and verified. Genuine Mukhi certification provided with each bead." },
+    { "emoji": "💎", "title": "Directly Sourced Stones", "desc": "We source natural stones directly from their true regions — ensuring originality, purity, and untouched natural energy." },
+    { "emoji": "🕉️", "title": "Vedic Energization", "desc": "All products undergo proper Vedic Puja and energization by certified priests before shipping to you." },
+    { "emoji": "🔬", "title": "Trust & Purity", "desc": "At VASTU, we stand for trust, purity, and spiritual connection. Every purchase is a step towards peace and growth." }
   ],
 
   "newsletter": {
-    "title": "Join Our Spiritual Community",
-    "subtitle": "Get exclusive deals on Rudraksha & gemstones, Puja dates, and spiritual tips.",
+    "title": "Join the VASTU Community",
+    "subtitle": "Get exclusive deals on Rudraksha & natural stones, Puja dates, and spiritual guidance.",
     "successMessage": "Thank you for subscribing! 🙏"
   },
 
   "about": {
-    "heroTitle": "About Divine Gems",
-    "heroSubtitle": "Your trusted source for authentic Rudraksha beads, certified gemstones, and sacred spiritual products since 2020.",
+    "heroTitle": "About VASTU",
+    "heroSubtitle": "Your trusted source for authentic Rudraksha beads, natural healing stones, and sacred spiritual products since 2020.",
     "story": [
-      "Divine Gems was born from a deep reverence for India's ancient spiritual traditions. We started with a simple mission: to make authentic, lab-certified Rudraksha beads and natural gemstones accessible to seekers worldwide.",
-      "Every product in our collection is carefully sourced from trusted suppliers in Nepal, Indonesia, and select mines across India. Our in-house gemologists verify each stone's authenticity before it reaches you."
+      "At VASTU, our journey began with a simple belief — that energy shapes our lives, and ancient wisdom still holds the power to guide us today. Like many, we were searching for peace, clarity, and balance. That's when we discovered the true power of Rudraksha and natural healing stones — not just as products, but as sources of positive energy and inner strength. That belief turned into VASTU.",
+      "We don't just sell Rudraksha and stones; we carefully select each piece for its authenticity and energy, ensuring it brings value, positivity, and purpose into your life. For us, every purchase is not just a transaction — it's a step towards peace, protection, and personal growth.",
+      "At VASTU, we stand for trust, purity, and spiritual connection. Whether you're starting your journey or already walking the path, we are here to support you. Because this is not just our story — it's yours too."
     ],
+    "speciality": "At VASTU, authenticity is our foundation. We source our natural stones directly from the regions they truly belong to — ensuring their originality, purity, and natural energy remain intact. Each stone is carefully selected and imported with precision, so what reaches you is not just a product, but its true, untouched essence.",
     "stat": { "value": "5,000+", "label": "Happy customers across India & abroad" },
     "values": [
-      { "icon": "FiShield", "title": "Certified Authentic", "desc": "Every Rudraksha & gemstone comes with a certificate of authenticity from accredited labs." },
+      { "icon": "FiShield", "title": "Certified Authentic", "desc": "Every Rudraksha & stone comes with a certificate of authenticity — verified and genuine." },
       { "icon": "FiHeart", "title": "Ethically Sourced", "desc": "We work directly with miners and growers to ensure fair practices and sustainable sourcing." },
-      { "icon": "FiStar", "title": "Expert Guidance", "desc": "Our astrologer consultants help you choose the right product based on your horoscope." },
+      { "icon": "FiStar", "title": "Expert Guidance", "desc": "Our consultants help you choose the right product based on your needs and spiritual journey." },
       { "icon": "FiAward", "title": "Quality Promise", "desc": "Not satisfied? We offer hassle-free returns within 15 days of delivery." }
     ],
     "ctaTitle": "Ready to Begin Your Spiritual Journey?",
-    "ctaText": "Browse our curated collection of Rudraksha, gemstones, malas, and more."
+    "ctaText": "Browse our curated collection of Rudraksha, natural stones, malas, and more."
   },
 
   "contactPage": {
     "title": "Contact Us",
-    "subtitle": "Have a question about our products or need astrological guidance? We'd love to hear from you.",
+    "subtitle": "Have a question about our products or need guidance? We'd love to hear from you.",
     "successTitle": "Message Sent!",
     "successMessage": "We'll get back to you within 24 hours. Namaste!"
   },
 
   "productsPage": {
     "title": "Sacred Collection",
-    "subtitle": "Discover authentic Rudraksha, gemstones, and spiritual products"
+    "subtitle": "Discover authentic Rudraksha, natural healing stones, and spiritual products"
   },
 
   "footer": {
@@ -110,7 +117,7 @@
       { "to": "/faq", "label": "FAQ" },
       { "to": "/privacy-policy", "label": "Privacy Policy" }
     ],
-    "bottomText": "Made with 💜 for your spiritual journey"
+    "bottomText": "Made with 💜 in India for your spiritual journey"
   },
 
   "customerServicePages": {
@@ -167,7 +174,7 @@
         {
           "heading": "How to Initiate a Return",
           "content": [
-            "Email us at support@divinegems.in with your Order ID and reason for return.",
+            "Email us at support@vastu.in with your Order ID and reason for return.",
             "Our team will respond within 24 hours with return instructions.",
             "Once we receive and inspect the item, your refund will be processed within 5–7 business days."
           ]
@@ -278,7 +285,7 @@
         {
           "heading": "Your Rights",
           "content": [
-            "Access, update, or delete your personal data by contacting support@divinegems.in.",
+            "Access, update, or delete your personal data by contacting support@vastu.in.",
             "Unsubscribe from marketing emails anytime via the link in our emails.",
             "Request a copy of all data we hold about you."
           ]

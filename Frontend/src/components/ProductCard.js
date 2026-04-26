@@ -4,10 +4,11 @@ import { FiShoppingCart, FiStar } from 'react-icons/fi';
 
 const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,' + btoa(`
   <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
-    <rect fill="#e8e0f0" width="300" height="300"/>
-    <circle cx="150" cy="140" r="35" fill="#d4af37" opacity="0.3"/>
-    <circle cx="150" cy="140" r="25" fill="#9966cc" opacity="0.2"/>
-    <text x="150" y="190" text-anchor="middle" font-size="12" fill="#9966cc" font-family="sans-serif" font-weight="bold">Divine Gems</text>
+    <rect fill="#eee8b2" width="300" height="300" rx="8"/>
+    <circle cx="150" cy="130" r="40" fill="#203b37" opacity="0.15"/>
+    <circle cx="150" cy="130" r="28" fill="#5abf76" opacity="0.12"/>
+    <circle cx="150" cy="130" r="16" fill="#c18d52" opacity="0.2"/>
+    <text x="150" y="195" text-anchor="middle" font-size="13" fill="#081b1b" font-family="Georgia, serif" font-weight="bold" letter-spacing="3">VASTU</text>
   </svg>
 `);
 

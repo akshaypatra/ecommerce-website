@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none" opacity="0.22">
+  <!-- Gemstone 1: Diamond shape -->
+  <g transform="translate(60,80)">
+    <polygon points="0,-30 25,0 0,45 -25,0" stroke="#c18d52" stroke-width="0.8" fill="#c18d52" fill-opacity="0.08"/>
+    <line x1="0" y1="-30" x2="0" y2="45" stroke="#c18d52" stroke-width="0.3"/>
+    <line x1="-25" y1="0" x2="25" y2="0" stroke="#c18d52" stroke-width="0.3"/>
+    <line x1="-25" y1="0" x2="0" y2="45" stroke="#c18d52" stroke-width="0.3"/>
+    <line x1="25" y1="0" x2="0" y2="45" stroke="#c18d52" stroke-width="0.3"/>
+  </g>
+  <!-- Gemstone 2: Hexagonal emerald -->
+  <g transform="translate(160,60)">
+    <polygon points="0,-25 22,-12 22,12 0,25 -22,12 -22,-12" stroke="#5abf76" stroke-width="0.8" fill="#5abf76" fill-opacity="0.06"/>
+    <polygon points="0,-15 13,-7 13,7 0,15 -13,7 -13,-7" stroke="#5abf76" stroke-width="0.4"/>
+    <line x1="0" y1="-25" x2="0" y2="-15" stroke="#5abf76" stroke-width="0.3"/>
+    <line x1="22" y1="-12" x2="13" y2="-7" stroke="#5abf76" stroke-width="0.3"/>
+    <line x1="22" y1="12" x2="13" y2="7" stroke="#5abf76" stroke-width="0.3"/>
+    <line x1="0" y1="25" x2="0" y2="15" stroke="#5abf76" stroke-width="0.3"/>
+    <line x1="-22" y1="12" x2="-13" y2="7" stroke="#5abf76" stroke-width="0.3"/>
+    <line x1="-22" y1="-12" x2="-13" y2="-7" stroke="#5abf76" stroke-width="0.3"/>
+  </g>
+  <!-- Gemstone 3: Oval cabochon -->
+  <g transform="translate(250,100)">
+    <ellipse rx="20" ry="28" stroke="#c18d52" stroke-width="0.8" fill="#c18d52" fill-opacity="0.06"/>
+    <ellipse rx="12" ry="18" stroke="#c18d52" stroke-width="0.4" fill="none"/>
+    <ellipse rx="5" ry="8" stroke="#c18d52" stroke-width="0.3" fill="#c18d52" fill-opacity="0.1"/>
+  </g>
+  <!-- Gemstone 4: Round brilliant -->
+  <g transform="translate(100,200)">
+    <circle r="22" stroke="#96cdb0" stroke-width="0.8" fill="#96cdb0" fill-opacity="0.06"/>
+    <polygon points="0,-22 8,-8 22,-7 12,5 15,20 0,13 -15,20 -12,5 -22,-7 -8,-8" stroke="#96cdb0" stroke-width="0.4" fill="none"/>
+    <circle r="8" stroke="#96cdb0" stroke-width="0.3"/>
+  </g>
+  <!-- Gemstone 5: Marquise -->
+  <g transform="translate(220,210)">
+    <ellipse rx="28" ry="14" stroke="#5abf76" stroke-width="0.8" fill="#5abf76" fill-opacity="0.05" transform="rotate(30)"/>
+    <ellipse rx="18" ry="8" stroke="#5abf76" stroke-width="0.4" fill="none" transform="rotate(30)"/>
+    <line x1="-24" y1="14" x2="24" y2="-14" stroke="#5abf76" stroke-width="0.3"/>
+  </g>
+  <!-- Small sparkle dots -->
+  <circle cx="30" cy="150" r="2" fill="#c18d52" fill-opacity="0.2"/>
+  <circle cx="280" cy="45" r="2" fill="#5abf76" fill-opacity="0.2"/>
+  <circle cx="140" cy="270" r="2" fill="#c18d52" fill-opacity="0.2"/>
+  <circle cx="50" cy="250" r="1.5" fill="#96cdb0" fill-opacity="0.15"/>
+  <circle cx="270" cy="270" r="1.5" fill="#c18d52" fill-opacity="0.15"/>
+</svg>

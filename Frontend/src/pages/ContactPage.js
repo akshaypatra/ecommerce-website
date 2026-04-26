@@ -17,7 +17,7 @@ function ContactPage() {
   };
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 decorated-mandala decorated-mandala--right">
       <h1 style={{ color: 'var(--spiritual-purple)', marginBottom: '0.5rem' }}>{contactPage.title}</h1>
       <p style={{ color: 'var(--text-light)', marginBottom: '2.5rem', fontSize: '1.05rem' }}>
         {contactPage.subtitle}
@@ -27,7 +27,7 @@ function ContactPage() {
         {/* Contact Form */}
         <div className="col-lg-7">
           {submitted ? (
-            <div className="empty-state" style={{ background: 'linear-gradient(135deg, var(--primary-soft-mint) 0%, var(--primary-light-lavender) 100%)' }}>
+            <div className="empty-state" style={{ background: 'linear-gradient(135deg, #eee8b220 0%, #96cdb020 100%)' }}>
               <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{brand.emoji}</div>
               <h3 style={{ color: 'var(--spiritual-purple)', marginBottom: '0.5rem' }}>{contactPage.successTitle}</h3>
               <p style={{ color: 'var(--text-light)' }}>{contactPage.successMessage}</p>
@@ -68,45 +68,45 @@ function ContactPage() {
 
         {/* Contact Info */}
         <div className="col-lg-5">
-          <div className="card" style={{ borderRadius: 'var(--radius-lg)', background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-soft-mint) 100%)' }}>
+          <div className="card" style={{ borderRadius: 'var(--radius-lg)', background: 'linear-gradient(135deg, #081b1b 0%, #203b37 100%)' }}>
             <div className="card-body p-4">
-              <h5 style={{ color: 'var(--spiritual-purple)', fontWeight: '600', marginBottom: '1.5rem' }}>Get In Touch</h5>
+              <h5 style={{ color: '#c18d52', fontWeight: '600', marginBottom: '1.5rem' }}>Get In Touch</h5>
 
               <div className="d-flex align-items-start mb-3">
-                <FiMapPin style={{ color: 'var(--spiritual-teal)', fontSize: '1.3rem', marginTop: '2px', flexShrink: 0 }} />
+                <FiMapPin style={{ color: '#5abf76', fontSize: '1.3rem', marginTop: '2px', flexShrink: 0 }} />
                 <div className="ms-3">
-                  <strong style={{ fontSize: '0.9rem' }}>Address</strong>
-                  <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: 0 }}>
+                  <strong style={{ fontSize: '0.9rem', color: '#eee8b2' }}>Address</strong>
+                  <p style={{ color: '#96cdb0', fontSize: '0.9rem', marginBottom: 0 }}>
                     {contact.address.full}
                   </p>
                 </div>
               </div>
 
               <div className="d-flex align-items-start mb-3">
-                <FiPhone style={{ color: 'var(--spiritual-teal)', fontSize: '1.3rem', marginTop: '2px', flexShrink: 0 }} />
+                <FiPhone style={{ color: '#5abf76', fontSize: '1.3rem', marginTop: '2px', flexShrink: 0 }} />
                 <div className="ms-3">
-                  <strong style={{ fontSize: '0.9rem' }}>Phone</strong>
-                  <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: 0 }}>
+                  <strong style={{ fontSize: '0.9rem', color: '#eee8b2' }}>Phone</strong>
+                  <p style={{ color: '#96cdb0', fontSize: '0.9rem', marginBottom: 0 }}>
                     {contact.phone}
                   </p>
                 </div>
               </div>
 
               <div className="d-flex align-items-start mb-3">
-                <FiMail style={{ color: 'var(--spiritual-teal)', fontSize: '1.3rem', marginTop: '2px', flexShrink: 0 }} />
+                <FiMail style={{ color: '#5abf76', fontSize: '1.3rem', marginTop: '2px', flexShrink: 0 }} />
                 <div className="ms-3">
-                  <strong style={{ fontSize: '0.9rem' }}>Email</strong>
-                  <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: 0 }}>
+                  <strong style={{ fontSize: '0.9rem', color: '#eee8b2' }}>Email</strong>
+                  <p style={{ color: '#96cdb0', fontSize: '0.9rem', marginBottom: 0 }}>
                     {contact.email}
                   </p>
                 </div>
               </div>
 
-              <hr style={{ borderColor: 'var(--accent-lavender)' }} />
+              <hr style={{ borderColor: '#203b37' }} />
 
-              <h6 style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Business Hours</h6>
-              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '0.2rem' }}>{contact.businessHours.weekdays}</p>
-              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: 0 }}>{contact.businessHours.weekend}</p>
+              <h6 style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#eee8b2' }}>Business Hours</h6>
+              <p style={{ color: '#96cdb0', fontSize: '0.9rem', marginBottom: '0.2rem' }}>{contact.businessHours.weekdays}</p>
+              <p style={{ color: '#96cdb0', fontSize: '0.9rem', marginBottom: 0 }}>{contact.businessHours.weekend}</p>
             </div>
           </div>
         </div>

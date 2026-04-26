@@ -93,7 +93,7 @@ function ProductsPage() {
   const totalPages = Math.ceil(totalCount / 20);
 
   return (
-    <div className="container py-4">
+    <div className="container py-4 decorated-gemstones">
       {/* Header */}
       <div className="page-header">
         <h1>{siteConfig.productsPage.title}</h1>

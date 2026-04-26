@@ -13,7 +13,7 @@ function HomePage() {
   // eslint-disable-next-line
   const [loading, setLoading] = useState(true);
 
-  const { hero, trustBadges, fallbackCategories, whyChooseUs, newsletter } = siteConfig;
+  const { hero, trustBadges, fallbackCategories, whyChooseUs, newsletter, speciality } = siteConfig;
 
   useEffect(() => {
     const loadData = async () => {
@@ -97,11 +97,14 @@ function HomePage() {
         </div>
       </section>
 
+      {/* Rudraksh Divider */}
+      <div className="rudraksh-divider" />
+
       {/* Shop by Category */}
-      <section className="py-5">
+      <section className="py-5 decorated-gemstones">
         <div className="container">
           <h2 className="section-title">Shop by Category</h2>
-          <p className="section-subtitle">Explore our divine collection of spiritual products</p>
+          <p className="section-subtitle">Explore our curated collection of spiritual products</p>
 
           <div className="row g-4">
             {(categories.length > 0 ? categories : fallbackCategories).slice(0, 6).map((category, index) => (
@@ -121,20 +124,21 @@ function HomePage() {
                         />
                         <div className="category-overlay">
                           <h5>{category.name}</h5>
+                          <span className="category-explore">Explore Collection <FiArrowRight size={12} /></span>
                         </div>
                       </div>
                     ) : (
-                      <>
-                        <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>
+                      <div className="category-card-body">
+                        <div className="category-card-emoji">
                           {getCategoryEmoji(category)}
                         </div>
-                        <h5 style={{ color: 'var(--spiritual-purple)', fontWeight: '600' }}>
+                        <h5 className="category-card-name">
                           {category.name}
                         </h5>
-                        <p style={{ color: 'var(--text-light)', fontSize: '0.85rem', margin: 0 }}>
+                        <p className="category-card-desc">
                           {category.description || 'Explore collection'}
                         </p>
-                      </>
+                      </div>
                     )}
                   </div>
                 </Link>
@@ -144,9 +148,12 @@ function HomePage() {
         </div>
       </section>
 
+      {/* Rudraksh Divider */}
+      <div className="rudraksh-divider" />
+
       {/* Featured Products */}
       {featuredProducts.length > 0 && (
-        <section className="py-5" style={{ background: 'var(--bg)' }}>
+        <section className="py-5 decorated-mandala decorated-mandala--right" style={{ background: 'var(--bg)' }}>
           <div className="container">
             <h2 className="section-title">Featured Products</h2>
             <p className="section-subtitle">Handpicked divine items for you</p>
@@ -167,7 +174,7 @@ function HomePage() {
       )}
 
       {/* Why Choose Us */}
-      <section className="py-5">
+      <section className="py-5 decorated-lotus decorated-lotus--left">
         <div className="container">
           <h2 className="section-title">Why Choose {siteConfig.brand.name}?</h2>
           <div className="row g-4 mt-2">
@@ -188,10 +195,26 @@ function HomePage() {
         </div>
       </section>
 
+      {/* Rudraksh Divider */}
+      <div className="rudraksh-divider" />
+
+      {/* Our Speciality */}
+      {speciality && (
+        <section className="py-5 om-watermark" style={{ background: 'linear-gradient(135deg, #081b1b 0%, #203b37 100%)', position: 'relative' }}>
+          <div className="shimmer-overlay" />
+          <div className="container" style={{ maxWidth: '750px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '2rem', fontWeight: '700', color: '#c18d52' }}>{speciality.title}</h2>
+            <p style={{ color: '#96cdb0', fontSize: '1.05rem', lineHeight: '1.8', marginTop: '1rem' }}>
+              {speciality.desc}
+            </p>
+          </div>
+        </section>
+      )}
+
       {/* Newsletter */}
-      <section className="py-5" style={{ background: 'linear-gradient(135deg, var(--primary-light-lavender) 0%, var(--primary-pale-gold) 100%)', textAlign: 'center' }}>
-        <div className="container" style={{ maxWidth: '550px' }}>
-          <h2 style={{ color: 'var(--spiritual-purple)', marginBottom: '1rem', fontWeight: '700' }}>
+      <section className="py-5 decorated-lotus decorated-lotus--right" style={{ background: 'linear-gradient(135deg, #eee8b218 0%, #96cdb015 100%)', textAlign: 'center' }}>
+        <div className="container" style={{ maxWidth: '550px', position: 'relative', zIndex: 1 }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#081b1b', marginBottom: '1rem', fontWeight: '700' }}>
             {newsletter.title}
           </h2>
           <p style={{ color: 'var(--text-light)', marginBottom: '2rem' }}>

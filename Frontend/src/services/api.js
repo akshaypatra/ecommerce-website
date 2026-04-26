@@ -188,6 +188,9 @@ export const orderAPI = {
 
   downloadInvoice: (orderId) =>
     apiClient.get(`/orders/${orderId}/invoice/`, { responseType: 'blob' }),
+
+  cancelOrder: (orderId, reason = '') =>
+    apiClient.post(`/orders/${orderId}/cancel/`, { reason }),
 };
 
 // ─── Payment API ────────────────────────────────────────────

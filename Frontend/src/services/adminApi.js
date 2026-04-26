@@ -56,6 +56,8 @@ const adminAPI = {
   updateOrder: (id, data) => apiClient.patch(`/admin/orders/${id}/`, data),
   updateOrderStatus: (id, status, note = '') =>
     apiClient.post(`/admin/orders/${id}/update_status/`, { status, note }),
+  revertPayment: (orderId) =>
+    apiClient.post(`/orders/${orderId}/revert-payment/`),
 
   // Payments
   getPayments: (params = {}) => apiClient.get('/admin/payments/', { params }),

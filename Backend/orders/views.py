@@ -1,4 +1,6 @@
 from django.http import HttpResponse
+from django.utils import timezone
+from datetime import timedelta
 from rest_framework import generics, status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -131,6 +133,92 @@ class UpdateOrderStatusView(APIView):
             order=order,
             status=new_status,
             note=serializer.validated_data.get('note', f'Status changed from {old_status} to {new_status}'),
+            changed_by=request.user,
+        )
+
+        return Response(OrderSerializer(order).data)
+
+
+class CancelOrderView(APIView):
+    """
+    POST /api/orders/<order_id>/cancel/
+    User can cancel an order within 24 hours of placing it.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, order_id):
+        try:
+            order = Order.objects.get(order_id=order_id, user=request.user)
+        except Order.DoesNotExist:
+            return Response({'detail': 'Order not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Already cancelled or delivered
+        if order.status in ('cancelled', 'delivered', 'refunded'):
+            return Response(
+                {'detail': f'Order cannot be cancelled. Current status: {order.status}.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check 24-hour window
+        time_since_order = timezone.now() - order.created_at
+        if time_since_order > timedelta(hours=24):
+            return Response(
+                {'detail': 'Cancellation window has expired. Orders can only be cancelled within 24 hours of placing.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        old_status = order.status
+        order.status = 'cancelled'
+        order.save(update_fields=['status'])
+
+        # Restore product stock
+        for item in order.items.all():
+            item.product.stock += item.quantity
+            item.product.save(update_fields=['stock'])
+
+        OrderStatusHistory.objects.create(
+            order=order,
+            status='cancelled',
+            note=f'Cancelled by customer (was {old_status}). Reason: {request.data.get("reason", "No reason provided")}',
+            changed_by=request.user,
+        )
+
+        return Response(OrderSerializer(order).data)
+
+
+class AdminRevertPaymentView(APIView):
+    """
+    POST /api/orders/<order_id>/revert-payment/  (Admin only)
+    Admin can revert/refund payment for a cancelled order.
+    """
+    permission_classes = [permissions.IsAdminUser]
+
+    def post(self, request, order_id):
+        try:
+            order = Order.objects.get(order_id=order_id)
+        except Order.DoesNotExist:
+            return Response({'detail': 'Order not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if order.status != 'cancelled':
+            return Response(
+                {'detail': 'Payment can only be reverted for cancelled orders.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if order.payment_status == 'refunded':
+            return Response(
+                {'detail': 'Payment has already been refunded.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        order.payment_status = 'refunded'
+        order.status = 'refunded'
+        order.save(update_fields=['payment_status', 'status'])
+
+        OrderStatusHistory.objects.create(
+            order=order,
+            status='refunded',
+            note=f'Payment refunded by admin. Amount: ₹{order.total}',
             changed_by=request.user,
         )
 

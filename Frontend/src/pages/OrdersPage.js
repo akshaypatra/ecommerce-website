@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { FiPackage, FiDownload, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiPackage, FiDownload, FiChevronDown, FiChevronUp, FiXCircle } from 'react-icons/fi';
 import { orderAPI } from '../services/api';
 
 function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState(null);
+  const [cancellingOrder, setCancellingOrder] = useState(null);
+  const [cancelReason, setCancelReason] = useState('');
+  const [showCancelModal, setShowCancelModal] = useState(null);
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -61,6 +64,34 @@ function OrdersPage() {
     }
   };
 
+  const canCancelOrder = (order) => {
+    if (['cancelled', 'delivered', 'refunded', 'shipped', 'out_for_delivery'].includes(order.status)) return false;
+    const hoursSinceOrder = (Date.now() - new Date(order.created_at).getTime()) / (1000 * 60 * 60);
+    return hoursSinceOrder <= 24;
+  };
+
+  const getTimeRemaining = (order) => {
+    const msRemaining = 24 * 60 * 60 * 1000 - (Date.now() - new Date(order.created_at).getTime());
+    if (msRemaining <= 0) return null;
+    const hours = Math.floor(msRemaining / (1000 * 60 * 60));
+    const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}m`;
+  };
+
+  const handleCancelOrder = async (orderId) => {
+    setCancellingOrder(orderId);
+    try {
+      await orderAPI.cancelOrder(orderId, cancelReason);
+      setShowCancelModal(null);
+      setCancelReason('');
+      fetchOrders();
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to cancel order.');
+    } finally {
+      setCancellingOrder(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="container py-5 text-center">
@@ -93,7 +124,7 @@ function OrdersPage() {
                 {/* Order Header */}
                 <div
                   className="card-body"
-                  style={{ cursor: 'pointer', background: 'linear-gradient(135deg, var(--primary-cream) 0%, var(--primary-light-lavender) 100%)' }}
+                  style={{ cursor: 'pointer', background: 'linear-gradient(135deg, #eee8b218 0%, #96cdb015 100%)' }}
                   onClick={() => setExpandedOrder(isExpanded ? null : order.order_id)}
                 >
                   <div className="row align-items-center">
@@ -208,7 +239,7 @@ function OrdersPage() {
                     )}
 
                     {/* Actions */}
-                    <div className="mt-3 d-flex gap-2">
+                    <div className="mt-3 d-flex gap-2 flex-wrap align-items-center">
                       <button
                         className="btn btn-outline-primary btn-sm"
                         style={{ borderRadius: 'var(--radius-md)' }}
@@ -216,7 +247,65 @@ function OrdersPage() {
                       >
                         <FiDownload className="me-1" /> Download Invoice
                       </button>
+
+                      {canCancelOrder(order) && (
+                        <button
+                          className="btn btn-sm"
+                          style={{
+                            borderRadius: 'var(--radius-md)',
+                            background: '#c44536',
+                            color: '#fff',
+                            border: 'none',
+                          }}
+                          onClick={() => setShowCancelModal(order.order_id)}
+                        >
+                          <FiXCircle className="me-1" /> Cancel Order
+                        </button>
+                      )}
+
+                      {canCancelOrder(order) && (
+                        <small style={{ color: 'var(--text-light)', fontStyle: 'italic' }}>
+                          Cancel window: {getTimeRemaining(order)} remaining
+                        </small>
+                      )}
                     </div>
+
+                    {/* Cancel Modal */}
+                    {showCancelModal === order.order_id && (
+                      <div className="mt-3 p-3" style={{ background: 'var(--primary-soft-rose)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--danger)' }}>
+                        <h6 style={{ color: 'var(--danger)', fontWeight: '600', marginBottom: '0.75rem' }}>
+                          <FiXCircle className="me-1" /> Cancel This Order?
+                        </h6>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-medium)', marginBottom: '0.75rem' }}>
+                          This action cannot be undone. The admin will process your refund after cancellation.
+                        </p>
+                        <textarea
+                          className="form-control mb-2"
+                          rows="2"
+                          placeholder="Reason for cancellation (optional)"
+                          value={cancelReason}
+                          onChange={(e) => setCancelReason(e.target.value)}
+                          style={{ fontSize: '0.9rem' }}
+                        />
+                        <div className="d-flex gap-2">
+                          <button
+                            className="btn btn-sm"
+                            style={{ background: '#c44536', color: '#fff', border: 'none', borderRadius: 'var(--radius-md)' }}
+                            disabled={cancellingOrder === order.order_id}
+                            onClick={() => handleCancelOrder(order.order_id)}
+                          >
+                            {cancellingOrder === order.order_id ? 'Cancelling...' : 'Confirm Cancellation'}
+                          </button>
+                          <button
+                            className="btn btn-sm btn-outline-secondary"
+                            style={{ borderRadius: 'var(--radius-md)' }}
+                            onClick={() => { setShowCancelModal(null); setCancelReason(''); }}
+                          >
+                            Keep Order
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
