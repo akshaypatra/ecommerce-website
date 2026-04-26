@@ -111,7 +111,7 @@
    | `SECRET_KEY`                  | *(click Generate or use a random 50-char string)*              |
    | `DATABASE_URL`                | *(Neon connection string from Step 1)*                         |
    | `REDIS_URL`                   | *(Upstash URL from Step 2)*                                    |
-   | `ALLOWED_HOSTS`               | `vastu-api.onrender.com,api.stonesbyvastu.in`                  |
+   | `ALLOWED_HOSTS`               | `vastu-api-4155.onrender.com,api.stonesbyvastu.in`             |
    | `CORS_ALLOWED_ORIGINS`        | `https://stonesbyvastu.in,https://www.stonesbyvastu.in`        |
    | `FRONTEND_URL`                | `https://stonesbyvastu.in`                                     |
    | `PYTHON_VERSION`              | `3.12.4`                                                       |
@@ -127,7 +127,7 @@
    | `CLOUDINARY_API_SECRET`       | *(Cloudinary API secret from Step 2)*                          |
 
 5. Click **Create Web Service** → Wait for build (~3-5 min)
-6. Test: Visit `https://vastu-api.onrender.com/api/products/` — should return JSON
+6. Test: Visit `https://vastu-api-4155.onrender.com/api/products/` — should return JSON
 
 ---
 
@@ -148,7 +148,7 @@
 
    | Key                                  | Value                                                |
    |--------------------------------------|------------------------------------------------------|
-   | `REACT_APP_API_URL`                  | `https://vastu-api.onrender.com/api`                 |
+   | `REACT_APP_API_URL`                  | `https://vastu-api-4155.onrender.com/api`            |
    | `REACT_APP_RAZORPAY_KEY_ID`          | *(your Razorpay publishable key)*                    |
    | `REACT_APP_STRIPE_PUBLISHABLE_KEY`   | *(your Stripe publishable key)*                      |
 
@@ -177,7 +177,7 @@
 
    | Type    | Name  | Value                          |
    |---------|-------|--------------------------------|
-   | CNAME   | api   | `vastu-api.onrender.com`       |
+   | CNAME   | api   | `vastu-api-4155.onrender.com`  |
 
 ### Update After Domain Setup
 
@@ -185,7 +185,7 @@ Once DNS propagates (5-30 min), update environment variables:
 
 **On Render (backend):**
 - `CORS_ALLOWED_ORIGINS` = `https://stonesbyvastu.in,https://www.stonesbyvastu.in`
-- `ALLOWED_HOSTS` = `vastu-api.onrender.com,api.stonesbyvastu.in`
+- `ALLOWED_HOSTS` = `vastu-api-4155.onrender.com,api.stonesbyvastu.in`
 
 **On Vercel (frontend):**
 - `REACT_APP_API_URL` = `https://api.stonesbyvastu.in/api`
@@ -227,7 +227,7 @@ Admin panel: `https://api.stonesbyvastu.in/admin/`
 |---------|-------|----------------------------|----------------------------|
 | A       | @     | `76.76.21.21`              | stonesbyvastu.in → Vercel  |
 | CNAME   | www   | `cname.vercel-dns.com`     | www → Vercel               |
-| CNAME   | api   | `vastu-api.onrender.com`   | API subdomain → Render     |
+| CNAME   | api   | `vastu-api-4155.onrender.com` | API subdomain → Render  |
 
 SSL certificates are **automatically provisioned** by both Vercel and Render.
 
@@ -253,7 +253,7 @@ Render free tier sleeps after 15 min of inactivity. To prevent cold starts:
 1. Go to [uptimerobot.com](https://uptimerobot.com) → Sign up (free)
 2. Add monitor:
    - Type: **HTTP(s)**
-   - URL: `https://api.stonesbyvastu.in/api/products/`
+   - URL: `https://vastu-api-4155.onrender.com/api/products/`
    - Interval: **every 14 minutes**
 
 This pings the API continuously and prevents sleep.

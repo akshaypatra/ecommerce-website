@@ -114,18 +114,41 @@ else:
         }
     }
 
-# Redis Cache
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
-        'KEY_PREFIX': 'ecommerce',
-        'TIMEOUT': 300,  # 5 min default
+# Cache — Redis if available and reachable, otherwise in-memory
+REDIS_URL = os.getenv('REDIS_URL')
+_use_redis = False
+
+if REDIS_URL and REDIS_URL.startswith(('redis://', 'rediss://')):
+    try:
+        import redis as _redis
+        _r = _redis.from_url(REDIS_URL, socket_connect_timeout=5)
+        _r.ping()
+        _use_redis = True
+    except Exception:
+        _use_redis = False
+
+if _use_redis:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': REDIS_URL,
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+                'SOCKET_CONNECT_TIMEOUT': 5,
+                'SOCKET_TIMEOUT': 5,
+                'IGNORE_EXCEPTIONS': True,
+            },
+            'KEY_PREFIX': 'ecommerce',
+            'TIMEOUT': 300,
+        }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'vastu-cache',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -255,9 +278,12 @@ STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', '')
 # Frontend URL
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
 
-# Session engine using cache for scalability
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
+# Session engine — cache-backed if Redis is active, otherwise database
+if _use_redis:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    SESSION_CACHE_ALIAS = 'default'
+else:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Logging for production debugging
 LOGGING = {
